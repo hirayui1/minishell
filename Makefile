@@ -25,5 +25,8 @@ OBJS	:= $(SRCS:.c=.o)
 
 all: $(NAME)
 
-$(NAME): $(SRCS)
+$(NAME): makelibft $(SRCS)
 	$(CC) $(FLAGS) $(SRCS) -lreadline -o $(NAME)
+
+makelibft:
+	$(MAKE) -C libft
