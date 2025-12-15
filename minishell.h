@@ -20,6 +20,10 @@ typedef struct s_shell
 void	input_handler(char **input, t_shell **shell);
 int	try_exec(char *input, t_shell **shell);
 
+// utils/string_utils
+int	is_all(char *s, char c);
+void	remove_extra_chars(char *s, char c);
+
 // utils/sig_handlers
 void	sig_manager(void);
 

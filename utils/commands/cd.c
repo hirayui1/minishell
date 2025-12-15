@@ -5,9 +5,9 @@ void	remove_from_pwd(t_shell **shell, char *dir);
 void	update_pwd(t_shell **shell, char *dir);
 
 /**
- * @brief  on success chdir returns 0, strnstr finds whatever is after
- *         the first space, the arguments. chdir returns 0 on success,
- *         and shell's pwd is changed.
+ * @brief  strnstr finds whatever is after the first space,
+ * 	   the arguments. chdir returns 0 on success,
+ * 	   and shell's pwd is changed.
  *
  * @brief valgrind  old pwd needs to be freed before the new one.
  *		    strnstr does not create a new pointer but returns
@@ -28,7 +28,7 @@ void	cd(char *input, t_shell **shell)
 		if (dir[0] == '/')
 			update_pwd(shell, dir);
 		else if (!ft_strncmp("..", dir, 2)
-				&& ft_strncmp("//", (*shell)->pwd, ft_strlen((*shell)->pwd)))
+				&& !is_all((*shell)->pwd, '/'))
 			remove_from_pwd(shell, dir);
 		else if (ft_strncmp("..", dir, 2))
 			add_to_pwd(shell, dir);
@@ -40,11 +40,20 @@ void	cd(char *input, t_shell **shell)
 	}
 }
 
+/**
+ * @brief  replaces the pwd with the absolute path given.
+ * 	   reduces extra slashes to a single slash (///home//user)
+ * 	   also handles infinite slashes (////////) as root dir.
+ */ 
 void	update_pwd(t_shell **shell, char *dir)
 {
+	if (is_all(dir, '/'))
+	{
+		free(dir);
+		dir = ft_strdup("//");
+	}
 	free((*shell)->pwd);
 	(*shell)->pwd = dir;
-
 }
 
 void	remove_from_pwd(t_shell **shell, char *dir)
@@ -59,7 +68,6 @@ void	remove_from_pwd(t_shell **shell, char *dir)
 		last = next;
 		next = ft_strnstr(next + 1, "/", ft_strlen(next));
 	}
-	printf("last is: %s\n", last);
 	ft_bzero(last, ft_strlen(last));
 	if ((*shell)->pwd[0] == '\0')
 	{
@@ -68,6 +76,7 @@ void	remove_from_pwd(t_shell **shell, char *dir)
 	}
 	free(dir);
 }
+
 
 void	add_to_pwd(t_shell **shell, char *dir)
 {
