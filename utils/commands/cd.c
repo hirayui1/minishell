@@ -2,6 +2,7 @@
 
 void	add_to_pwd(t_shell **shell, char *dir);
 void	remove_from_pwd(t_shell **shell, char *dir);
+void	update_pwd(t_shell **shell, char *dir);
 
 /**
  * @brief  on success chdir returns 0, strnstr finds whatever is after
@@ -19,11 +20,17 @@ void	cd(char *input, t_shell **shell)
 	char	*dir;
 
 	dir = ft_strdup(ft_strnstr(input, " ", ft_strlen(input)) + 1);
+	if (dir[0] && dir[ft_strlen(dir) - 1] == '/'
+			&& ft_strncmp("//", dir, 2))
+		dir[ft_strlen(dir) - 1] = 0;
 	if ((*shell)->pwd[0] && !chdir(dir))
 	{
-		if (!ft_strncmp("..", dir, 2))
+		if (dir[0] == '/')
+			update_pwd(shell, dir);
+		else if (!ft_strncmp("..", dir, 2)
+				&& ft_strncmp("//", (*shell)->pwd, ft_strlen((*shell)->pwd)))
 			remove_from_pwd(shell, dir);
-		else
+		else if (ft_strncmp("..", dir, 2))
 			add_to_pwd(shell, dir);
 	}
 	else
@@ -31,6 +38,13 @@ void	cd(char *input, t_shell **shell)
 		printf("-bash: cd: %s: No such file or directory\n", dir);
 		free(dir);
 	}
+}
+
+void	update_pwd(t_shell **shell, char *dir)
+{
+	free((*shell)->pwd);
+	(*shell)->pwd = dir;
+
 }
 
 void	remove_from_pwd(t_shell **shell, char *dir)
@@ -45,7 +59,13 @@ void	remove_from_pwd(t_shell **shell, char *dir)
 		last = next;
 		next = ft_strnstr(next + 1, "/", ft_strlen(next));
 	}
+	printf("last is: %s\n", last);
 	ft_bzero(last, ft_strlen(last));
+	if ((*shell)->pwd[0] == '\0')
+	{
+		free((*shell)->pwd);
+		(*shell)->pwd = ft_strdup("//");
+	}
 	free(dir);
 }
 
@@ -55,6 +75,8 @@ void	add_to_pwd(t_shell **shell, char *dir)
 	char	*pwd;
 
 	pwd = (*shell)->pwd;
+	if (!ft_strncmp("//", pwd, 2))
+		pwd[ft_strlen(pwd) - 1] = 0;
 	if (pwd[0] && pwd[ft_strlen(pwd) - 1] != '/')
 	{
 		tmp = ft_strjoin(pwd, "/");
