@@ -47,10 +47,18 @@ void	cd(char *input, t_shell **shell)
  */ 
 void	update_pwd(t_shell **shell, char *dir)
 {
+	char	*tmp;
+
 	if (is_all(dir, '/'))
 	{
 		free(dir);
 		dir = ft_strdup("//");
+	}
+	else
+	{	
+		tmp = dir;
+		dir = remove_extra_chars(dir, '/');
+		free(tmp);
 	}
 	free((*shell)->pwd);
 	(*shell)->pwd = dir;
@@ -84,6 +92,9 @@ void	add_to_pwd(t_shell **shell, char *dir)
 	char	*pwd;
 
 	pwd = (*shell)->pwd;
+	tmp = dir;
+	dir = remove_extra_chars(dir, '/');
+	free(tmp);
 	if (!ft_strncmp("//", pwd, 2))
 		pwd[ft_strlen(pwd) - 1] = 0;
 	if (pwd[0] && pwd[ft_strlen(pwd) - 1] != '/')

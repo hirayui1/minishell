@@ -14,6 +14,7 @@ typedef struct s_shell
 {
 	struct s_shell	*next;
 	char	*pwd;
+	char	**envp;
 }	t_shell;
 
 // utils/input_utils
@@ -22,7 +23,7 @@ int	try_exec(char *input, t_shell **shell);
 
 // utils/string_utils
 int	is_all(char *s, char c);
-void	remove_extra_chars(char *s, char c);
+char	*remove_extra_chars(char *s, char c);
 
 // utils/sig_handlers
 void	sig_manager(void);
@@ -37,4 +38,6 @@ void	ft_exit(t_shell **shell, char **input, int exit_code);
 void	ls(char *input);
 void	cd(char *input, t_shell **shell);
 void	pwd(t_shell **shell);
+void	print_env(t_shell **shell);
+void	echo(char *input);
 #endif

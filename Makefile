@@ -13,7 +13,9 @@ UTILS	:= $(UDIR)/input_utils.c \
 	   $(UDIR)/exit_handler.c
 COMMANDS:= $(CDIR)/ls.c \
 	   $(CDIR)/cd.c \
-	   $(CDIR)/pwd.c
+	   $(CDIR)/pwd.c \
+	   $(CDIR)/env.c \
+	   $(CDIR)/echo.c
 ERRORS	:= $(EDIR)/error_prompt.c
 
 SRCS	:= main.c \

@@ -32,5 +32,9 @@ int	try_exec(char *input, t_shell **shell)
 		return (pwd(shell), 0);
 	else if (!ft_strncmp("cd ", input, 3))
 		return(cd(input, shell), 0);
+	else if (!ft_strncmp("env", input, 3))
+		return (print_env(shell), 0);
+	else if (!ft_strncmp("echo ", input, 5))
+		return (echo(input), 0);
 	return (1);
 }
