@@ -9,7 +9,7 @@ void	update_pwd(t_shell **shell, char *dir);
  * 	   the arguments. chdir returns 0 on success,
  * 	   and shell's pwd is changed.
  *
- * @brief valgrind  old pwd needs to be freed before the new one.
+ * @brief-valgrind  old pwd needs to be freed before the new one.
  *		    strnstr does not create a new pointer but returns
  *		    the part of an already existing one so dir is only
  *		    a part of the input variable, which gets freed by
@@ -18,11 +18,16 @@ void	update_pwd(t_shell **shell, char *dir);
 void	cd(char *input, t_shell **shell)
 {
 	char	*dir;
+  char  *tmp;
 
 	dir = ft_strdup(ft_strnstr(input, " ", ft_strlen(input)) + 1);
-	if (dir[0] && dir[ft_strlen(dir) - 1] == '/'
-			&& ft_strncmp("//", dir, 2))
-		dir[ft_strlen(dir) - 1] = 0;
+  if (!is_all(dir, '/') && ft_strncmp("..", dir, 2))
+  {
+    tmp = dir;
+    dir = remove_extra_chars(dir, '/');
+    dir[ft_strlen(dir) - 1] = 0;
+    free(tmp);
+  }
 	if ((*shell)->pwd[0] && !chdir(dir))
 	{
 		if (dir[0] == '/')
@@ -42,49 +47,59 @@ void	cd(char *input, t_shell **shell)
 
 /**
  * @brief  replaces the pwd with the absolute path given.
- * 	   reduces extra slashes to a single slash (///home//user)
- * 	   also handles infinite slashes (////////) as root dir.
+ *         if the dir is only slashes, pwd becomes root dir.
  */ 
 void	update_pwd(t_shell **shell, char *dir)
 {
-	char	*tmp;
-
 	if (is_all(dir, '/'))
 	{
 		free(dir);
 		dir = ft_strdup("//");
 	}
-	else
-	{	
-		tmp = dir;
-		dir = remove_extra_chars(dir, '/');
-		free(tmp);
-	}
 	free((*shell)->pwd);
 	(*shell)->pwd = dir;
 }
 
-void	remove_from_pwd(t_shell **shell, char *dir)
+static void rm_last(t_shell **shell)
 {
-	char	*last;
-	char	*next;
+  char  *last;
+  char  *next;
 
-	(void)dir;
-	next = ft_strnstr((*shell)->pwd, "/", ft_strlen((*shell)->pwd));
-	while (next)
-	{
-		last = next;
-		next = ft_strnstr(next + 1, "/", ft_strlen(next));
-	}
-	ft_bzero(last, ft_strlen(last));
-	if ((*shell)->pwd[0] == '\0')
-	{
-		free((*shell)->pwd);
-		(*shell)->pwd = ft_strdup("//");
-	}
-	free(dir);
+  next = ft_strnstr((*shell)->pwd, "/", ft_strlen((*shell)->pwd));
+  while (next)
+  {
+    last = next;
+    next = ft_strnstr(next + 1, "/", ft_strlen(next));
+  }
+  ft_bzero(last, ft_strlen(last));
+  if ((*shell)->pwd[0] == '\0')
+  {
+    free((*shell)->pwd);
+    (*shell)->pwd = ft_strdup("//");
+  }
 }
 
+void	remove_from_pwd(t_shell **shell, char *dir)
+{
+  int   count;
+  char  *next;
+
+  count = 1;
+  printf("comes as %s\n", dir);
+  next = ft_strnstr(dir, "..", ft_strlen(dir));
+  printf("first %s\n", next);
+  while (next)
+  {
+    next = ft_strnstr(next + 1, "..", ft_strlen(next));
+    printf("next is %s\n", next);
+    if (next)
+      count++;
+  }
+  printf("count is %d\n", count);
+  while (count--)
+    rm_last(shell);
+	free(dir);
+}
 
 void	add_to_pwd(t_shell **shell, char *dir)
 {
@@ -92,9 +107,6 @@ void	add_to_pwd(t_shell **shell, char *dir)
 	char	*pwd;
 
 	pwd = (*shell)->pwd;
-	tmp = dir;
-	dir = remove_extra_chars(dir, '/');
-	free(tmp);
 	if (!ft_strncmp("//", pwd, 2))
 		pwd[ft_strlen(pwd) - 1] = 0;
 	if (pwd[0] && pwd[ft_strlen(pwd) - 1] != '/')

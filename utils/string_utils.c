@@ -2,6 +2,7 @@
 
 /**
  * @brief  checks if s is only made of c chars
+ *
  * @return  1 for success, 0 for failure.
  */
 int	is_all(char *s, char c)
@@ -17,6 +18,29 @@ int	is_all(char *s, char c)
 	return (1);
 }
 
+/**
+ * @brief  checks if s is only made of the set of chars in any order.
+ *
+ * @return  1 for success, 0 for failure. 
+ */
+int	is_set(char *s, char *c)
+{
+  int i;
+
+  i = 0;
+	if (!s || !*c)
+		return (0);
+	while (*s)
+	{
+    while (c[i])
+    {
+		  if (*s != c[i++])
+		  	return (0);
+    }
+		s++;
+	}
+	return (1);
+}
 /**
  * @brief  should reduce trailing char c to only one,
  * 	   but also make sure to leave one of them.
@@ -37,19 +61,12 @@ char	*remove_extra_chars(char *s, char c)
 	{
 		if (s[i] == c && (s[i + 1] && s[i + 1] == c))
 		{
-			printf("1");
-			i++;
+		  // do nothing, duplicate char
 		}
-		else if (s[i] == c && s[i + 1] != '\0')
-		{
-			printf("2");
-			dst[j++] = '/';
-		}
+		else if (s[i] == c && s[i + 1])
+			dst[j++] = '/'; // end of dup
 		else
-		{
-			printf("3");
-			dst[j++] = s[i];
-		}
+			dst[j++] = s[i]; // append the word
 		printf("*s: %c, *dst: %s, i: %d, j: %d\n", s[i], dst, i, j);
 		i++;
 	}

@@ -2,6 +2,7 @@
 # define MINISHELL_H
 
 # include <unistd.h>
+# include <stdio.h>
 # include <readline/readline.h>
 # include <readline/history.h>
 # include <stdlib.h>
@@ -23,6 +24,7 @@ int	try_exec(char *input, t_shell **shell);
 
 // utils/string_utils
 int	is_all(char *s, char c);
+int is_set(char *s, char *c);
 char	*remove_extra_chars(char *s, char c);
 
 // utils/sig_handlers
