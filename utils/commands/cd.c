@@ -25,7 +25,8 @@ void	cd(char *input, t_shell **shell)
   {
     tmp = dir;
     dir = remove_extra_chars(dir, '/');
-    dir[ft_strlen(dir) - 1] = 0;
+    if (dir[ft_strlen(dir) - 1] == '/')
+      dir[ft_strlen(dir) - 1] = 0;
     free(tmp);
   }
 	if ((*shell)->pwd[0] && !chdir(dir))
