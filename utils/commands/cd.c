@@ -6,8 +6,8 @@ void	update_pwd(t_shell **shell, char *dir);
 
 /**
  * @brief  strnstr finds whatever is after the first space,
- * 	   the arguments. chdir returns 0 on success,
- * 	   and shell's pwd is changed.
+ * 	       the arguments, and removes all extra slashes.
+ * 	       chdir returns 0 on success, and shell's pwd is changed.
  *
  * @brief-valgrind  old pwd needs to be freed before the new one.
  *		    strnstr does not create a new pointer but returns
@@ -85,17 +85,13 @@ void	remove_from_pwd(t_shell **shell, char *dir)
   char  *next;
 
   count = 1;
-  printf("comes as %s\n", dir);
   next = ft_strnstr(dir, "..", ft_strlen(dir));
-  printf("first %s\n", next);
   while (next)
   {
     next = ft_strnstr(next + 1, "..", ft_strlen(next));
-    printf("next is %s\n", next);
     if (next)
       count++;
   }
-  printf("count is %d\n", count);
   while (count--)
     rm_last(shell);
 	free(dir);

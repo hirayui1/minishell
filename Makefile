@@ -15,7 +15,8 @@ COMMANDS:= $(CDIR)/ls.c \
 	   $(CDIR)/cd.c \
 	   $(CDIR)/pwd.c \
 	   $(CDIR)/env.c \
-	   $(CDIR)/echo.c
+	   $(CDIR)/echo.c \
+		 $(CDIR)/exec.c
 ERRORS	:= $(EDIR)/error_prompt.c
 
 SRCS	:= main.c \

@@ -9,6 +9,7 @@
 # include <signal.h>
 # include <sys/types.h>
 # include <sys/wait.h>
+# include <sys/stat.h>
 # include "libft.h"
 
 typedef struct s_shell
@@ -20,12 +21,13 @@ typedef struct s_shell
 
 // utils/input_utils
 void	input_handler(char **input, t_shell **shell);
-int	try_exec(char *input, t_shell **shell);
+int	  cmd_manager(char *input, t_shell **shell);
 
 // utils/string_utils
-int	is_all(char *s, char c);
-int is_set(char *s, char *c);
+int	  is_all(char *s, char c);
+int   is_set(char *s, char *c);
 char	*remove_extra_chars(char *s, char c);
+char  *try_find(char  *word, char **arr);
 
 // utils/sig_handlers
 void	sig_manager(void);
@@ -41,5 +43,6 @@ void	ls(char *input);
 void	cd(char *input, t_shell **shell);
 void	pwd(t_shell **shell);
 void	print_env(t_shell **shell);
-void	echo(char *input);
+void  echo(char *input);
+int   try_exec(char *input, t_shell **shell);
 #endif
