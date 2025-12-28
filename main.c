@@ -8,7 +8,7 @@ void	initialize(t_shell **shell, char **envp)
 	sig_manager();
 	*shell = malloc(sizeof(t_shell));
 	(*shell)->pwd = ft_strdup(getenv("PWD"));
-	(*shell)->envp = envp; // no need to free this
+	(*shell)->envp = load_list(envp); // no need to free this
 }
 
 int	main(int argc, char **argv, char **envp)
@@ -27,3 +27,4 @@ int	main(int argc, char **argv, char **envp)
 	}
 	return (0);
 }
+

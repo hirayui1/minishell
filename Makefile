@@ -8,6 +8,7 @@ CDIR	:= $(UDIR)/commands
 EDIR	:= $(UDIR)/errors
 
 UTILS	:= $(UDIR)/input_utils.c \
+		 $(UDIR)/list_utils.c \
 	   $(UDIR)/sig_handlers.c \
 	   $(UDIR)/string_utils.c \
 	   $(UDIR)/exit_handler.c

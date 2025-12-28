@@ -10,23 +10,19 @@ void	input_handler(char **input, t_shell **shell)
 	else if (ft_strlen(*input) != 0)
 	{
 		add_history(*input);
-		if (cmd_manager(*input, shell))
-			printf("%s: command not found.\n", *input);
+		cmd_manager(*input, shell);
 	}
 }
 
 int	cmd_manager(char *input, t_shell **shell)
 {
 	int	len;
+  char  *tmp;
 
+  tmp = ft_strtrim(input, " ");
+  input = remove_extra_chars(tmp, ' ');
 	len = ft_strlen(input);
-  input = remove_extra_chars(input, ' ');
-/*  if (!ft_strncmp("/bin/ls", input, len) 
-			|| !ft_strncmp("ls", input, len)
-			|| !ft_strncmp("ls ", input, 3)
-			|| !ft_strncmp("/bin/ls ", input, 9))
-		return (ls(input), 0);
-    */
+  free(tmp);
   if (!ft_strncmp("pwd", input, len))
 		return (pwd(shell), 0);
 	else if (!ft_strncmp("cd ", input, 3))
@@ -37,6 +33,8 @@ int	cmd_manager(char *input, t_shell **shell)
 		return (echo(input), 0);
   else if (!try_exec(input, shell))
     return (0);
+  else
+			printf("%s: command not found.\n", input);
   free(input); // this is the input instance from parsing extra chars
 	return (1);
 }

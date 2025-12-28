@@ -12,12 +12,21 @@
 # include <sys/stat.h>
 # include "libft.h"
 
+typedef struct s_env
+{
+  struct s_env  *next;
+  char  *val;
+} t_env;
+
 typedef struct s_shell
 {
 	struct s_shell	*next;
+  struct s_env    *envp;
 	char	*pwd;
-	char	**envp;
 }	t_shell;
+
+// utils/list_utils
+t_env *load_list(char **envp);
 
 // utils/input_utils
 void	input_handler(char **input, t_shell **shell);
