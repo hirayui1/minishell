@@ -20,34 +20,28 @@ char  *find_envar(char *input, t_shell **shell)
   return (0);
 }
 
-char  *expnd(char *input, t_shell **shell)
+void	*expand_helper(char **input, char **res, char *envar, int len)
 {
-  char  *res;
-  char  *envar;
-  char  *sign;
-  int   len;
+	while (*envar)
+	{
+		res[len] = *envar;
+		envar++;
+		len++;
+	}
+	*input += find_word_len(sign);
+}
 
-  envar = find_envar(input, shell);
-  if (!envar)
-    return (0);
-  sign = ft_strchr(input, '$');
-  len = find_word_len(sign);
-  len = (sign - input)
-    + ft_strlen(envar)
-    + ft_strlen(sign + find_word_len(sign));
-  res = malloc(sizeof(char) * len + 1);
+char	*expand_one(char *input, char *sign, int len, t_shell **shell)
+{
+	char	*res;
+
+	res = malloc(sizeof(char) * len + 1);
   len = 0;
   while (*input)
   {
     if (*input == '$')
     {
-      while (*envar)
-      {
-        res[len] = *envar;
-        envar++;
-        len++;
-      }
-      input += find_word_len(sign);
+			expand_helper(&input, &res, envar, len);
     }
     else
     {
@@ -59,3 +53,26 @@ char  *expnd(char *input, t_shell **shell)
   res[len] = 0;
   return (res);
 }
+
+char  *expnd(char *input, t_shell **shell)
+{
+	char	*tmp;
+  char  *envar;
+  char  *sign;
+  int   len;
+
+  envar = find_envar(input, shell);
+	while (!envar || !*envar)
+	{
+		sign = ft_strchr(input, '$');
+		len = find_word_len(sign);
+		len = (sign - input)
+			+ ft_strlen(envar)
+			+ ft_strlen(sign + find_word_len(sign));
+		tmp = input;
+		input = expand_one(input, sign, len, shell);
+		free(tmp);
+		envar = find_envar(input, shell);
+	}
+	return (0);
+ }
