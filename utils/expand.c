@@ -20,62 +20,45 @@ char  *find_envar(char *input, t_shell **shell)
   return (0);
 }
 
-void	*expand_helper(char **input, char **res, char *envar, int *len)
+int	len_of_envar(char *s, t_shell **shell)
 {
-	char	*sign;
+	t_env	*envp;
 
-	sign = ft_strchr(*input, '$');
-	while (*envar)
-	{
-		*res[*len] = *envar;
-		envar++;
-		*len++;
-	}
-	*input += find_word_len(sign);
+	envp = find_key(s + 1, (*shell)->envp);
+	if (!envp)
+		return (0);
+	return (ft_strlen(ft_strchr(envp->val, '=') + 1));
 }
 
-char	*expand_one(char *input, char *sign, int len, t_shell **shell)
+void	calc_total_len(char *input, int *len, t_shell **shell)
 {
-	char	*res;
+	char	**split;
+	int		i;
+	int		checker;
 
-	res = malloc(sizeof(char) * len + 1);
-  len = 0;
-  while (*input)
-  {
-    if (*input == '$')
-    {
-			expand_helper(&input, &res, envar, &len);
-    }
-    else
-    {
-      res[len] = *input;
-      input++;
-      len++;
-    }
-  }
-  res[len] = 0;
-  return (res);
+	split = ft_split(input, '$');
+	i = 0;
+	while (split[i])
+	{
+		checker = len_of_envar(split[i], shell);
+		if (checker)
+			*len += checker;
+		else
+			*len += ft_strlen(split[i]);
+		i++;
+	}
 }
 
 char  *expnd(char *input, t_shell **shell)
 {
-	char	*tmp;
-  char  *envar;
-  char  *sign;
-  int   len;
+	int	len;
 
-  envar = find_envar(input, shell);
-	while (!envar || !*envar)
-	{
-		sign = ft_strchr(input, '$');
-		len = find_word_len(sign);
-		len = (sign - input)
-			+ ft_strlen(envar)
-			+ ft_strlen(sign + find_word_len(sign));
-		tmp = input;
-		input = expand_one(input, sign, len, shell);
-		free(tmp);
-		envar = find_envar(input, shell);
-	}
+	len = 0;
+	calc_total_len(input, &len, shell);
+	printf("%d\n", len);
+	//#1 TODO: correctly calculate length
+	//#2 TODO: create a string and start iterating over input
+	//#3 TODO: check if the current char is $, if so check if envar exists
+	//#4 TODO: if exists, fill in envar instead of current chars from input
 	return (0);
  }
