@@ -9,13 +9,16 @@ EDIR	:= $(UDIR)/errors
 
 UTILS	:= $(UDIR)/input_utils.c \
 		 $(UDIR)/list_utils.c \
+		 $(UDIR)/list_ops.c \
+		 $(UDIR)/expand.c \
 	   $(UDIR)/sig_handlers.c \
 	   $(UDIR)/string_utils.c \
 	   $(UDIR)/exit_handler.c
-COMMANDS:= $(CDIR)/ls.c \
-	   $(CDIR)/cd.c \
+COMMANDS:= $(CDIR)/cd.c \
 	   $(CDIR)/pwd.c \
 	   $(CDIR)/env.c \
+	   $(CDIR)/unset.c \
+	   $(CDIR)/export.c \
 	   $(CDIR)/echo.c \
 		 $(CDIR)/exec.c
 ERRORS	:= $(EDIR)/error_prompt.c

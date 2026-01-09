@@ -23,14 +23,22 @@ void	sigint_action(int sig)
  * 	   SIGINT: newline empty prompt
  * 	   SIGQUIT: ignore
  */
-void	sig_manager(void)
+void	sig_manager(int level)
 {
 	struct sigaction	psa;
 
 	sigemptyset(&psa.sa_mask);
-	psa.sa_handler = sigint_action;
 	psa.sa_flags = SA_RESTART;
-	sigaction(SIGINT, &psa, NULL);
+	if (level)
+	{
+		psa.sa_handler = SIG_IGN;
+		sigaction(SIGINT, &psa, NULL);
+	}
+	else
+	{
+		psa.sa_handler = sigint_action;
+		sigaction(SIGINT, &psa, NULL);
+	}
 	psa.sa_handler = SIG_IGN;
 	sigaction(SIGQUIT, &psa, NULL);
 }

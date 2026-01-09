@@ -1,10 +1,15 @@
 #include "../minishell.h"
 
-/**
- * @brief  checks if s is only made of c chars
- *
- * @return  1 for success, 0 for failure.
- */
+void  free_2d(char **split)
+{
+  int i;
+
+  i = 0;
+  while (split[i])
+    free(split[i++]);
+  free(split);
+}
+
 int	is_all(char *s, char c)
 {
 	if (!s || !c)
@@ -18,38 +23,36 @@ int	is_all(char *s, char c)
 	return (1);
 }
 
-/**
- * @brief  checks if s is only made of the set of chars in any order.
- *
- * @return  1 for success, 0 for failure. 
- */
-int	is_set(char *s, char *c)
+char	*substr(char *s, int len)
 {
-  int i;
+	char	*res;
+	int		i;
 
-  i = 0;
-	if (!s || !*c)
+	i = 0;
+	if (!s || len < 1)
 		return (0);
-	while (*s)
+	res = malloc(sizeof(char) * len + 1);
+	if (!res)
+		return (0);
+	while (i < len)
 	{
-    while (c[i])
-    {
-		  if (*s != c[i++])
-		  	return (0);
-    }
-		s++;
+		res[i] = s[i];
+		i++;
 	}
-	return (1);
+	res[i] = 0;
+	return (res);
 }
 
-/**
- * @brief  checks if the array starts with word in every array in a 2D array
- *         Particularly useful for fetching a variable from envp.
- *
- * @return  returns a partial pointer of the 2D array.
- *          its undesirable to free this, hence failure returns 0 instead
- *          of empty string.
- */
+int	find_word_len(char *input)
+{
+	int	len;
+
+	len = 0;
+	while (input[len] && input[len] != ' ')
+		len++;
+	return (len);
+}
+
 char  *try_find(char *word, char **arr)
 {
   int len;
@@ -65,11 +68,7 @@ char  *try_find(char *word, char **arr)
   }
   return (0);
 }
-/**
- * @brief  should reduce trailing char c to only one,
- * 	   but also make sure to leave one of them.
- * 	   (/////home//user///folder////) -> (/home/user/folder)
- */
+
 char	*remove_extra_chars(char *s, char c)
 {
 	char	*dst;
@@ -78,7 +77,7 @@ char	*remove_extra_chars(char *s, char c)
 
 	dst = malloc(sizeof(char) * ft_strlen(s) + 1);
 	if (!dst)
-		return (0);
+			return (0);
 	i = 0;
 	j = 0;
 	while (s[i])

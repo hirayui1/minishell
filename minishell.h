@@ -12,6 +12,11 @@
 # include <sys/stat.h>
 # include "libft.h"
 
+// personal macros for reducing magic numbers
+# define N_OPTION "-n "
+# define N_OPTION_LEN 3
+# define ECHO_LEN 5
+
 typedef struct s_env
 {
   struct s_env  *next;
@@ -27,19 +32,33 @@ typedef struct s_shell
 
 // utils/list_utils
 t_env *load_list(char **envp);
+char	**lst_to_array(t_env *envp);
+t_env	*find_key(char *key, t_env *envp);
+
+// utils/list_ops
+t_env	*lst_append(char *val, t_env *envp);
+t_env	*lstnew(char *val);
+void	lst_destroy(t_env *envp);
 
 // utils/input_utils
 void	input_handler(char **input, t_shell **shell);
 int	  cmd_manager(char *input, t_shell **shell);
 
 // utils/string_utils
+char	*expnd(char *input, t_shell **shell);
 int	  is_all(char *s, char c);
 int   is_set(char *s, char *c);
 char	*remove_extra_chars(char *s, char c);
 char  *try_find(char  *word, char **arr);
+void	free_2d(char **split);
+char	*substr(char *s, int len);
+int		find_word_len(char *input);
+
+// utils/expand.c
+
 
 // utils/sig_handlers
-void	sig_manager(void);
+void	sig_manager(int level);
 
 // utils/errors/error_prompts
 void	write_error(void);
@@ -48,10 +67,11 @@ void	write_error(void);
 void	ft_exit(t_shell **shell, char **input, int exit_code);
 
 // utils/commands
-void	ls(char *input);
 void	cd(char *input, t_shell **shell);
 void	pwd(t_shell **shell);
 void	print_env(t_shell **shell);
+void	unset(char *input, t_shell **shell);
+void	exprt(char *input, t_shell **shell);
 void  echo(char *input);
 int   try_exec(char *input, t_shell **shell);
 #endif

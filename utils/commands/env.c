@@ -2,16 +2,13 @@
 
 void	print_env(t_shell **shell)
 {
-	int	i;
-	char	**envp;
+	t_env	*envp;
 
-  (void)envp;
-  (void)i;
-  (void)shell;
-  /*
 	envp = (*shell)->envp;
-	i = 0;
-	while (envp[i])
-		printf("%s\n", envp[i++]);
-    */
+	while (envp)
+	{
+		if (envp->val[0])
+			printf("%s\n", envp->val);
+		envp = envp->next;
+	}
 }

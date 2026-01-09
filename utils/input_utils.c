@@ -14,25 +14,47 @@ void	input_handler(char **input, t_shell **shell)
 	}
 }
 
+char	*normalizer(char *input, t_shell **shell)
+{
+	char	*tmp;
+
+	tmp = expnd(input, shell);
+	if (tmp)
+	{
+		input = ft_strtrim(tmp, " ");
+		return(free(tmp), remove_extra_chars(input, ' '));
+	}
+	else
+	{
+		tmp = ft_strtrim(input, " ");
+		input = remove_extra_chars(input, ' ');
+		return (free(tmp), input);
+	}
+	
+}
+
 int	cmd_manager(char *input, t_shell **shell)
 {
 	int	len;
-  char  *tmp;
 
-  tmp = ft_strtrim(input, " ");
-  input = remove_extra_chars(tmp, ' ');
+	input = normalizer(input, shell);
 	len = ft_strlen(input);
-  free(tmp);
   if (!ft_strncmp("pwd", input, len))
-		return (pwd(shell), 0);
-	else if (!ft_strncmp("cd ", input, 3))
-		return(cd(input, shell), 0);
+		return (pwd(shell), free(input), 0);
+	else if (!ft_strncmp("cd", input, len) || !ft_strncmp("cd ", input, 3))
+		return(cd(input, shell), free(input), 0);
 	else if (!ft_strncmp("env", input, 3))
-		return (print_env(shell), 0);
-	else if (!ft_strncmp("echo ", input, 5))
-		return (echo(input), 0);
-  else if (!try_exec(input, shell))
-    return (0);
+		return (print_env(shell), free(input), 0);
+	else if (!ft_strncmp("unset", input, 5))
+		return (unset(input, shell), free(input), 0);
+	else if (!ft_strncmp("export", input, 6))
+		return (exprt(input, shell), free(input), 0);
+	else if (!ft_strncmp("echo", input, len) || !ft_strncmp("echo ", input, 5))
+		return (echo(input), free(input), 0);
+  else if (!try_exec(input, shell)) //TODO: if try_exec can't find it, it
+																		//should only return 1 if it cannot find
+																		//input anywhere
+    return (free(input), 0);
   else
 			printf("%s: command not found.\n", input);
   free(input); // this is the input instance from parsing extra chars
