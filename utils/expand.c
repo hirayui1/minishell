@@ -20,13 +20,16 @@ char  *find_envar(char *input, t_shell **shell)
   return (0);
 }
 
-void	*expand_helper(char **input, char **res, char *envar, int len)
+void	*expand_helper(char **input, char **res, char *envar, int *len)
 {
+	char	*sign;
+
+	sign = ft_strchr(*input, '$');
 	while (*envar)
 	{
-		res[len] = *envar;
+		*res[*len] = *envar;
 		envar++;
-		len++;
+		*len++;
 	}
 	*input += find_word_len(sign);
 }
@@ -41,7 +44,7 @@ char	*expand_one(char *input, char *sign, int len, t_shell **shell)
   {
     if (*input == '$')
     {
-			expand_helper(&input, &res, envar, len);
+			expand_helper(&input, &res, envar, &len);
     }
     else
     {
