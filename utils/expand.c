@@ -5,10 +5,9 @@ char  *find_envar(char *input, t_shell **shell)
   t_env *envp;
   int   len;
 
-  input = ft_strchr(input, '$');
+	input++;
   if (!input)
     return (0);
-  input++;
   len = find_word_len(input);
   input = substr(input, len);
   if (!input)
@@ -20,33 +19,32 @@ char  *find_envar(char *input, t_shell **shell)
   return (0);
 }
 
-int	len_of_envar(char *s, t_shell **shell)
+int	calc_total_len(char *input, int *len, t_shell **shell)
 {
-	t_env	*envp;
+	char	*val;
+	char	*tmp;
 
-	envp = find_key(s + 1, (*shell)->envp);
-	if (!envp)
-		return (0);
-	return (ft_strlen(ft_strchr(envp->val, '=') + 1));
-}
-
-void	calc_total_len(char *input, int *len, t_shell **shell)
-{
-	char	**split;
-	int		i;
-	int		checker;
-
-	split = ft_split(input, '$');
-	i = 0;
-	while (split[i])
+	val = ft_strchr(input, '$');
+	if (!val)
+		return (1);
+	while (val)
 	{
-		checker = len_of_envar(split[i], shell);
-		if (checker)
-			*len += checker;
+		*len += val - input;
+		input += val - input;
+		tmp = find_envar(val, shell);
+		if (tmp)
+			*len += ft_strlen(tmp);
 		else
-			*len += ft_strlen(split[i]);
-		i++;
+			*len += find_word_len(input);
+		input += find_word_len(input);
+		if (!*input)
+			break;
+		val = ft_strchr(input, '$');
 	}
+
+	if (*input)
+		*len += ft_strlen(input);
+	return (0);
 }
 
 char  *expnd(char *input, t_shell **shell)

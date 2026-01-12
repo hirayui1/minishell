@@ -30,15 +30,19 @@ char  **lst_to_array(t_env *envp)
 
 t_env *find_key(char *key, t_env *envp)
 {
-	char	len;
+	int	len;		
+	int	keylen;
 
+	keylen = ft_strlen(key);
   while (envp)
   {
 		if (*(envp->val) != '\0')
 		{
 			len = ft_strchr(envp->val, '=') - envp->val;
-			if (!ft_strncmp(key, envp->val, len))
+			if (keylen == len && !ft_strncmp(key, envp->val, len))
+			{
 				return (envp);
+			}
 			envp = envp->next;
 		}
   }
