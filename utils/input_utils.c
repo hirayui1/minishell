@@ -22,7 +22,10 @@ char	*normalizer(char *input, t_shell **shell)
 	if (tmp)
 	{
 		input = ft_strtrim(tmp, " ");
-		return(free(tmp), remove_extra_chars(input, ' '));
+		free(tmp);
+		tmp = remove_extra_chars(input, ' ');
+		free(input);
+		return(tmp);
 	}
 	else
 	{

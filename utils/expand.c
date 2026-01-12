@@ -49,22 +49,19 @@ int	calc_total_len(char *input, int *len, t_shell **shell)
 void	insert_var(char **out, char **input, t_shell **shell)
 {
 	char	*val;
+	int		len;
 
 	val = find_envar(*input, shell);
+	len = find_word_len(*input + 1);
 	if (val)
 	{
 		ft_memcpy(*out, val, ft_strlen(val));
-		**out += ft_strlen(val);
-		**input += find_word_len(*input + 1) + 1;
+		*out += ft_strlen(val);
 	}
-	else
-	{
-		**out = **input;
-		(*out)++;
-		(*input)++;
-	}
+	*input += len + 1;
 }
-
+// char **c = "asd"
+// **c += 1;
 char	*rebuild_str(char *input, int len, t_shell **shell)
 {
 	char	*res;
@@ -79,7 +76,11 @@ char	*rebuild_str(char *input, int len, t_shell **shell)
 		if (*input == '$')
 			insert_var(&out, &input, shell);
 		else
-			*out = *input++;
+		{
+			*out = *input;
+			out++;
+			input++;
+		}
 	}
 	*out = 0;
 	//TODO: replace invalid envar such as $PW with empty string.
