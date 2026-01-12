@@ -48,7 +48,7 @@ int	find_word_len(char *input)
 	int	len;
 
 	len = 0;
-	while (input[len] && input[len] != ' ')
+	while (*input && ft_isalnum(input[len]))
 		len++;
 	return (len);
 }

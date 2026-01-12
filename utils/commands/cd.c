@@ -34,9 +34,7 @@ void	cd(char *input, t_shell **shell)
 		update_pwd(shell);
 	}
 	else if (!chdir(dir))
-	{
 		update_pwd(shell);
-	}
 	else
 		printf("-bash: cd: %s: No such file or directory\n", dir);
 	free(dir);

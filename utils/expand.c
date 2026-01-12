@@ -35,16 +35,55 @@ int	calc_total_len(char *input, int *len, t_shell **shell)
 		if (tmp)
 			*len += ft_strlen(tmp);
 		else
-			*len += find_word_len(input);
-		input += find_word_len(input);
+			*len += find_word_len(input + 1) + 1;
+		input += find_word_len(input + 1) + 1;
 		if (!*input)
 			break;
 		val = ft_strchr(input, '$');
 	}
-
 	if (*input)
 		*len += ft_strlen(input);
 	return (0);
+}
+
+void	insert_var(char **out, char **input, t_shell **shell)
+{
+	char	*val;
+
+	val = find_envar(*input, shell);
+	if (val)
+	{
+		ft_memcpy(*out, val, ft_strlen(val));
+		**out += ft_strlen(val);
+		**input += find_word_len(*input + 1) + 1;
+	}
+	else
+	{
+		**out = **input;
+		(*out)++;
+		(*input)++;
+	}
+}
+
+char	*rebuild_str(char *input, int len, t_shell **shell)
+{
+	char	*res;
+	char	*out;
+
+	res = malloc(sizeof(char) * (len + 1));
+	if (!res)
+		return (0);
+	out = res;
+	while (*input)
+	{
+		if (*input == '$')
+			insert_var(&out, &input, shell);
+		else
+			*out = *input++;
+	}
+	*out = 0;
+	//TODO: replace invalid envar such as $PW with empty string.
+	return (res);
 }
 
 char  *expnd(char *input, t_shell **shell)
@@ -52,11 +91,7 @@ char  *expnd(char *input, t_shell **shell)
 	int	len;
 
 	len = 0;
-	calc_total_len(input, &len, shell);
-	printf("%d\n", len);
-	//#1 TODO: correctly calculate length
-	//#2 TODO: create a string and start iterating over input
-	//#3 TODO: check if the current char is $, if so check if envar exists
-	//#4 TODO: if exists, fill in envar instead of current chars from input
+	if (!calc_total_len(input, &len, shell))
+		return (rebuild_str(input, len, shell));
 	return (0);
  }
