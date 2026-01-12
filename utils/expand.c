@@ -34,6 +34,8 @@ int	calc_total_len(char *input, int *len, t_shell **shell)
 		tmp = find_envar(val, shell);
 		if (tmp)
 			*len += ft_strlen(tmp);
+		else if (find_word_len(input + 1) == 0)
+			*len += 1;
 		else
 			*len += find_word_len(input + 1) + 1;
 		input += find_word_len(input + 1) + 1;
@@ -51,12 +53,25 @@ void	insert_var(char **out, char **input, t_shell **shell)
 	char	*val;
 	int		len;
 
-	val = find_envar(*input, shell);
-	len = find_word_len(*input + 1);
+	if ((*input)[1] == '?')
+	{
+		val = ft_itoa((*shell)->last_exit_status);
+		len = 1;
+	}
+	else
+	{
+		val = find_envar(*input, shell);
+		len = find_word_len(*input + 1);
+	}
 	if (val)
 	{
 		ft_memcpy(*out, val, ft_strlen(val));
 		*out += ft_strlen(val);
+	}
+	else if (len == 0)
+	{
+		**out = **input;
+		*out += 1;
 	}
 	*input += len + 1;
 }
@@ -83,7 +98,6 @@ char	*rebuild_str(char *input, int len, t_shell **shell)
 		}
 	}
 	*out = 0;
-	//TODO: replace invalid envar such as $PW with empty string.
 	return (res);
 }
 

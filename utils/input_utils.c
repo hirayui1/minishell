@@ -24,8 +24,7 @@ char	*normalizer(char *input, t_shell **shell)
 		input = ft_strtrim(tmp, " ");
 		free(tmp);
 		tmp = remove_extra_chars(input, ' ');
-		free(input);
-		return(tmp);
+		return(free(input), tmp);
 	}
 	else
 	{
