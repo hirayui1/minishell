@@ -52,13 +52,11 @@ int	cmd_manager(char *input, t_shell **shell)
 	else if (!ft_strncmp("export", input, 6))
 		return (exprt(input, shell), free(input), 0);
 	else if (!ft_strncmp("echo", input, len) || !ft_strncmp("echo ", input, 5))
-		return (echo(input), free(input), 0);
-  else if (!try_exec(input, shell)) //TODO: if try_exec can't find it, it
-																		//should only return 1 if it cannot find
-																		//input anywhere
-    return (free(input), 0);
-  else
-			printf("%s: command not found.\n", input);
+		return (echo(input, shell), free(input), 0);
+  else if (!try_exec(input, shell))
+		return (free(input), 0);
+	(*shell)->last_exit_status = 127;
+	printf("-bash: %s: command not found\n", input);
   free(input); // this is the input instance from parsing extra chars
-	return (1);
+	return (127);
 }

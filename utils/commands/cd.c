@@ -25,17 +25,35 @@ void	cd(char *input, t_shell **shell)
 		dir = 0;
 	else
 		dir = ft_strdup(ft_strnstr(input, " ", ft_strlen(input)) + 1);
-	if (!dir)
+	if (!dir) // TODO: split these into smaller functions later
 	{
 		envp = find_key("HOME", (*shell)->envp);
 		if (!envp)
-			return (printf("-bash: cd: HOME not set\n"), (void)0);
-		chdir(envp->val);
-		update_pwd(shell);
+		{
+			printf("-bash: cd: HOME not set\n");
+			(*shell)->last_exit_status = 1;
+			return ;
+		}
+		if (chdir(ft_strchr(envp->val, '=') + 1) == -1)
+		{
+			perror("-bash: cd");
+			(*shell)->last_exit_status = 1;
+		}
+		else
+		{
+			update_pwd(shell);
+			(*shell)->last_exit_status = 0;
+		}
 	}
-	else if (!chdir(dir))
+	else if (chdir(dir) == 0)
+	{
 		update_pwd(shell);
+		(*shell)->last_exit_status = 0;
+	}
 	else
-		printf("-bash: cd: %s: No such file or directory\n", dir);
+	{
+		perror("-bash: cd");
+		(*shell)->last_exit_status = 1;
+	}
 	free(dir);
 }

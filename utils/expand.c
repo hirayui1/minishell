@@ -23,19 +23,34 @@ int	calc_total_len(char *input, int *len, t_shell **shell)
 {
 	char	*val;
 	char	*tmp;
+	char	*tmp_exit;
 
 	val = ft_strchr(input, '$');
 	if (!val)
 		return (1);
-	while (val)
-	{
+	while (val) // TODO: refactor into functions, below 25 lines
+	{ 
 		*len += val - input;
 		input += val - input;
 		tmp = find_envar(val, shell);
-		if (tmp)
-			*len += ft_strlen(tmp);
-		else if (find_word_len(input + 1) == 0)
-			*len += 1;
+		if (tmp) // found env var
+			*len += ft_strlen(tmp); 
+		else if (find_word_len(input + 1) == 0) // prob just a lone $
+		{
+			if (input[1] == '?') // is it a '$?'?
+			{
+				tmp_exit = ft_itoa((*shell)->last_exit_status);
+				if (tmp_exit) // yes it is
+				{
+					*len += ft_strlen(tmp_exit);
+					free(tmp_exit);
+				}
+				else // nope, just a lone $
+					*len += 1;
+			}
+			else // really just a lone $
+				*len += 1;
+		}
 		else
 			*len += find_word_len(input + 1) + 1;
 		input += find_word_len(input + 1) + 1;

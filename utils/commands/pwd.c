@@ -5,8 +5,13 @@ void	pwd(t_shell **shell)
 	t_env	*envp;
 	char	*tmp;
 
-	//TODO: print from pwd and now envp, update envp if exists
 	tmp = getcwd(NULL, 0);
+	if (!tmp)
+	{
+		perror("pwd");
+		(*shell)->last_exit_status = 1;
+		return ;
+	}
 	printf("%s\n", tmp);
 	envp = find_key("PWD", (*shell)->envp);
 	if (envp)
@@ -17,5 +22,5 @@ void	pwd(t_shell **shell)
 	}
 	else
 		free(tmp);
-	//printf("%s\n", (*shell)->pwd);
+	(*shell)->last_exit_status = 0;
 }

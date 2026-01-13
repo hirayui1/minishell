@@ -3,7 +3,7 @@
 /*
  * skips first 5 chars which are "echo " and prints
  */
-void	echo(char *input)
+void	echo(char *input, t_shell **shell)
 {
 	input = ft_strnstr(input, " ", ECHO_LEN);
 	if (!input || !(++input))
@@ -15,4 +15,5 @@ void	echo(char *input)
 	}
 	else
 		printf("%s\n", input);
+	(*shell)->last_exit_status = 0;
 }
