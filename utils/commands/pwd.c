@@ -18,9 +18,7 @@ void	pwd(t_shell **shell)
 	{
 		free(envp->val);
 		envp->val = ft_strjoin("PWD=", tmp);
-		free(tmp);
 	}
-	else
-		free(tmp);
+	free(tmp);
 	(*shell)->last_exit_status = 0;
 }

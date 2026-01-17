@@ -1,97 +1,118 @@
 #include "../minishell.h"
 
-char  *find_envar(char *input, t_shell **shell)
+/*
+** find_envar - Find environment variable value
+*/
+char	*find_envar(char *input, t_shell **shell)
 {
-  t_env *envp;
-  int   len;
+	t_env	*envp;
+	int		len;
 
-	input++;
-  if (!input)
-    return (0);
-  len = find_word_len(input);
-  input = substr(input, len);
-  if (!input)
-    return (0);
-  envp = find_key(input, (*shell)->envp);
-  free(input);
-  if (envp)
-    return (ft_strchr(envp->val, '=') + 1);
-  return (0);
+	++input;
+	if (!input)
+		return (NULL);
+	len = find_word_len(input);
+	input = substr(input, len);
+	if (!input)
+		return (NULL);
+	envp = find_key(input, (*shell)->envp);
+	free(input);
+	if (envp)
+		return (ft_strchr(envp->val, '=') + 1);
+	return (NULL);
 }
 
+/*
+** skip_single_quote - Skip single quoted section, add to length
+*/
+static void	skip_single_quote(char **input, int *len)
+{
+	*len += 2;
+	++(*input);
+	while (**input && **input != '\'')
+	{
+		++(*len);
+		++(*input);
+	}
+	if (**input == '\'')
+		++(*input);
+}
+
+/*
+** calc_in_dquote - Calculate length inside double quotes
+*/
+static void	calc_in_dquote(char **input, int *len, t_shell **shell)
+{
+	*len += 2;
+	++(*input);
+	while (**input && **input != '"')
+	{
+		if (**input == '$')
+			calc_var_len(input, len, shell);
+		else
+		{
+			++(*len);
+			++(*input);
+		}
+	}
+	if (**input == '"')
+		++(*input);
+}
+
+/*
+** calc_total_len - Calculate total length of expanded string
+*/
 int	calc_total_len(char *input, int *len, t_shell **shell)
 {
-	char	*val;
-	char	*tmp;
-	char	*tmp_exit;
-
-	val = ft_strchr(input, '$');
-	if (!val)
-		return (1);
-	while (val) // TODO: refactor into functions, below 25 lines
-	{ 
-		*len += val - input;
-		input += val - input;
-		tmp = find_envar(val, shell);
-		if (tmp) // found env var
-			*len += ft_strlen(tmp); 
-		else if (find_word_len(input + 1) == 0) // prob just a lone $
-		{
-			if (input[1] == '?') // is it a '$?'?
-			{
-				tmp_exit = ft_itoa((*shell)->last_exit_status);
-				if (tmp_exit) // yes it is
-				{
-					*len += ft_strlen(tmp_exit);
-					free(tmp_exit);
-				}
-				else // nope, just a lone $
-					*len += 1;
-			}
-			else // really just a lone $
-				*len += 1;
-		}
+	while (*input)
+	{
+		if (*input == '\'')
+			skip_single_quote(&input, len);
+		else if (*input == '"')
+			calc_in_dquote(&input, len, shell);
+		else if (*input == '$')
+			calc_var_len(&input, len, shell);
 		else
-			*len += find_word_len(input + 1) + 1;
-		input += find_word_len(input + 1) + 1;
-		if (!*input)
-			break;
-		val = ft_strchr(input, '$');
+		{
+			++(*len);
+			++input;
+		}
 	}
-	if (*input)
-		*len += ft_strlen(input);
 	return (0);
 }
 
-void	insert_var(char **out, char **input, t_shell **shell)
+/*
+** copy_single_quote - Copy single quoted content with quotes
+*/
+static void	copy_single_quote(char **out, char **input)
 {
-	char	*val;
-	int		len;
-
-	if ((*input)[1] == '?')
-	{
-		val = ft_itoa((*shell)->last_exit_status);
-		len = 1;
-	}
-	else
-	{
-		val = find_envar(*input, shell);
-		len = find_word_len(*input + 1);
-	}
-	if (val)
-	{
-		ft_memcpy(*out, val, ft_strlen(val));
-		*out += ft_strlen(val);
-	}
-	else if (len == 0)
-	{
-		**out = **input;
-		*out += 1;
-	}
-	*input += len + 1;
+	*(*out)++ = *(*input)++;
+	while (**input && **input != '\'')
+		*(*out)++ = *(*input)++;
+	if (**input == '\'')
+		*(*out)++ = *(*input)++;
 }
-// char **c = "asd"
-// **c += 1;
+
+/*
+** copy_in_dquote - Copy double quoted content with expansion and quotes
+*/
+static void	copy_in_dquote(char **out, char **input, t_shell **shell)
+{
+	*(*out)++ = *(*input)++;
+	while (**input && **input != '"')
+	{
+		if (**input == '$')
+			insert_var(out, input, shell);
+		else
+			*(*out)++ = *(*input)++;
+	}
+	if (**input == '"')
+		*(*out)++ = *(*input)++;
+}
+
+/*
+** rebuild_str - Build expanded string with variable values
+*/
 char	*rebuild_str(char *input, int len, t_shell **shell)
 {
 	char	*res;
@@ -99,29 +120,31 @@ char	*rebuild_str(char *input, int len, t_shell **shell)
 
 	res = malloc(sizeof(char) * (len + 1));
 	if (!res)
-		return (0);
+		return (NULL);
 	out = res;
 	while (*input)
 	{
-		if (*input == '$')
+		if (*input == '\'')
+			copy_single_quote(&out, &input);
+		else if (*input == '"')
+			copy_in_dquote(&out, &input, shell);
+		else if (*input == '$')
 			insert_var(&out, &input, shell);
 		else
-		{
-			*out = *input;
-			out++;
-			input++;
-		}
+			*out++ = *input++;
 	}
-	*out = 0;
+	*out = '\0';
 	return (res);
 }
 
-char  *expnd(char *input, t_shell **shell)
+/*
+** expnd - Expand environment variables in input string
+*/
+char	*expnd(char *input, t_shell **shell)
 {
 	int	len;
 
 	len = 0;
-	if (!calc_total_len(input, &len, shell))
-		return (rebuild_str(input, len, shell));
-	return (0);
- }
+	calc_total_len(input, &len, shell);
+	return (rebuild_str(input, len, shell));
+}

@@ -4,12 +4,11 @@ void	unset(char *input, t_shell **shell)
 {
 	t_env	*envp;
 
-	if (!input || !ft_strnstr(input, " ", 6))
+	if (!*input)
 	{
-		(*shell)->last_exit_status = 1;
+		(*shell)->last_exit_status = 0;
 		return ;
 	}
-	input = ft_strnstr(input, " ", 6) + 1;
 	envp = find_key(input, (*shell)->envp);
 	if (envp)
 	{

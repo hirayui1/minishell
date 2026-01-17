@@ -6,46 +6,50 @@ void	update_pwd(t_shell **shell)
 	char	*tmp;
 
 	pwd = find_key("PWD", (*shell)->envp);
-	if (pwd)
+	if (!pwd)
+		return ;
+	tmp = getcwd(NULL, 0);
+	free(pwd->val);
+	pwd->val = ft_strjoin("PWD=", tmp);
+	free(tmp);
+}
+
+static int	cd_home(t_shell **shell)
+{
+	t_env	*envp;
+
+	envp = find_key("HOME", (*shell)->envp);
+	if (!envp)
 	{
-		tmp = getcwd(NULL, 0);
-		free(pwd->val);
-		pwd->val = ft_strjoin("PWD=", tmp);
-		free(tmp);
+		(*shell)->last_exit_status = 1;
+		printf("-bash: cd: HOME not set\n");
+		return (1);
 	}
+	if (chdir(ft_strchr(envp->val, '=') + 1) == -1)
+	{
+		perror("-bash: cd");
+		(*shell)->last_exit_status = 1;
+		return (1);
+	}
+	update_pwd(shell);
+	(*shell)->last_exit_status = 0;
+	return (0);
 }
 
 void	cd(char *input, t_shell **shell)
 {
 	char	*dir;
-	t_env	*envp;
 
-	if (!ft_strncmp("cd", input, ft_strlen(input))
-				|| !ft_strncmp("cd ", input, ft_strlen(input)))
-		dir = 0;
+	if (!*input)
+		dir = NULL;
 	else
-		dir = ft_strdup(ft_strnstr(input, " ", ft_strlen(input)) + 1);
-	if (!dir) // TODO: split these into smaller functions later
+		dir = ft_strdup(input);
+	if (!dir)
 	{
-		envp = find_key("HOME", (*shell)->envp);
-		if (!envp)
-		{
-			printf("-bash: cd: HOME not set\n");
-			(*shell)->last_exit_status = 1;
-			return ;
-		}
-		if (chdir(ft_strchr(envp->val, '=') + 1) == -1)
-		{
-			perror("-bash: cd");
-			(*shell)->last_exit_status = 1;
-		}
-		else
-		{
-			update_pwd(shell);
-			(*shell)->last_exit_status = 0;
-		}
+		cd_home(shell);
+		return ;
 	}
-	else if (chdir(dir) == 0)
+	if (chdir(dir) == 0)
 	{
 		update_pwd(shell);
 		(*shell)->last_exit_status = 0;

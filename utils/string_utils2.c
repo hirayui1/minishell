@@ -1,0 +1,65 @@
+#include "../minishell.h"
+
+/*
+** skip_in_quotes - Skip content inside quotes, copy to dst
+*/
+static int	skip_in_quotes(char *s, char *dst, int *i, int j)
+{
+	char	quote;
+
+	quote = s[*i];
+	dst[j++] = s[(*i)++];
+	while (s[*i] && s[*i] != quote)
+		dst[j++] = s[(*i)++];
+	if (s[*i] == quote)
+		dst[j++] = s[(*i)++];
+	return (j);
+}
+
+/*
+** remove_extra_chars - Remove consecutive duplicate chars (quote-aware)
+*/
+char	*remove_extra_chars(char *s, char c)
+{
+	char	*dst;
+	int		i;
+	int		j;
+
+	dst = malloc(sizeof(char) * (ft_strlen(s) + 1));
+	if (!dst)
+		return (NULL);
+	i = 0;
+	j = 0;
+	while (s[i])
+	{
+		if (s[i] == '\'' || s[i] == '"')
+			j = skip_in_quotes(s, dst, &i, j);
+		else if (s[i] == c && s[i + 1] && s[i + 1] == c)
+			++i;
+		else if (s[i] == c && s[i + 1])
+			dst[j++] = s[i++];
+		else
+			dst[j++] = s[i++];
+	}
+	dst[j] = '\0';
+	return (dst);
+}
+
+/*
+** try_find - Search for word in array
+*/
+char	*try_find(char *word, char **arr)
+{
+	int	len;
+	int	i;
+
+	len = ft_strlen(word);
+	i = 0;
+	while (arr[i])
+	{
+		if (!ft_strncmp(arr[i], word, len))
+			return (arr[i]);
+		++i;
+	}
+	return (NULL);
+}

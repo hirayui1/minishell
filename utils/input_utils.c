@@ -2,61 +2,60 @@
 
 void	input_handler(char **input, t_shell **shell)
 {
-	if (!*input) // null - ctrl + D
-	{
-		clear_history();
+	if (!*input)
 		ft_exit(shell, input, 1);
-	}
-	else if (ft_strlen(*input) != 0)
+	else if (ft_strlen(*input))
 	{
 		add_history(*input);
 		cmd_manager(*input, shell);
 	}
 }
 
-char	*normalizer(char *input, t_shell **shell)
+static char	*normalizer(char *input, t_shell **shell)
 {
 	char	*tmp;
+	char	*trimmed;
 
 	tmp = expnd(input, shell);
-	if (tmp)
+	trimmed = ft_strtrim(tmp, " ");
+	free(tmp);
+	tmp = remove_extra_chars(trimmed, ' ');
+	free(trimmed);
+	return (tmp);
+}
+
+int	run_single_cmd(char *input, t_shell **shell)
+{
+	t_cmd	cmd;
+
+	parse_command(input, &cmd, shell);
+	cmd.heredoc_fd = -1;
+	collect_heredocs(cmd.redirs, &cmd.heredoc_fd);
+	if (!cmd.args || !cmd.args[0])
 	{
-		input = ft_strtrim(tmp, " ");
-		free(tmp);
-		tmp = remove_extra_chars(input, ' ');
-		return(free(input), tmp);
+		if (cmd.heredoc_fd != -1)
+			close(cmd.heredoc_fd);
+		return (free_cmd(&cmd), 0);
 	}
-	else
-	{
-		tmp = ft_strtrim(input, " ");
-		input = remove_extra_chars(input, ' ');
-		return (free(tmp), input);
-	}
-	
+	execute_command(&cmd, shell);
+	if (cmd.heredoc_fd != -1)
+		close(cmd.heredoc_fd);
+	return (free_cmd(&cmd), 0);
 }
 
 int	cmd_manager(char *input, t_shell **shell)
 {
-	int	len;
+	int	pipe_count;
 
 	input = normalizer(input, shell);
-	len = ft_strlen(input);
-  if (!ft_strncmp("pwd", input, len))
-		return (pwd(shell), free(input), 0);
-	else if (!ft_strncmp("cd", input, len) || !ft_strncmp("cd ", input, 3))
-		return(cd(input, shell), free(input), 0);
-	else if (!ft_strncmp("env", input, 3))
-		return (print_env(shell), free(input), 0);
-	else if (!ft_strncmp("unset", input, 5))
-		return (unset(input, shell), free(input), 0);
-	else if (!ft_strncmp("export", input, 6))
-		return (exprt(input, shell), free(input), 0);
-	else if (!ft_strncmp("echo", input, len) || !ft_strncmp("echo ", input, 5))
-		return (echo(input, shell), free(input), 0);
-  else if (!try_exec(input, shell))
-		return (free(input), 0);
-	(*shell)->last_exit_status = 127;
-	printf("-bash: %s: command not found\n", input);
-  free(input); // this is the input instance from parsing extra chars
-	return (127);
+	pipe_count = count_pipes(input);
+	if (pipe_count == 0)
+	{
+		run_single_cmd(input, shell);
+		free(input);
+		return (0);
+	}
+	run_pipeline(input, pipe_count, shell);
+	free(input);
+	return (0);
 }

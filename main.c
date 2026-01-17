@@ -5,13 +5,25 @@ void	initialize(t_shell **shell, char **envp)
 	sig_manager(0);
 	*shell = malloc(sizeof(t_shell));
 	(*shell)->pwd = ft_strdup(getenv("PWD"));
-	(*shell)->envp = load_list(envp); // need to free the list on exit
+	(*shell)->envp = load_list(envp);
+	(*shell)->last_exit_status = 0;
+}
+
+void	cleanup_shell(t_shell **shell)
+{
+	if (!*shell)
+		return ;
+	if ((*shell)->pwd)
+		free((*shell)->pwd);
+	lst_destroy((*shell)->envp);
+	free(*shell);
+	*shell = NULL;
 }
 
 int	main(int argc, char **argv, char **envp)
 {
-	char			*input;
-	t_shell		*shell;
+	char	*input;
+	t_shell	*shell;
 
 	(void)argc;
 	(void)argv;

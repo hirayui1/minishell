@@ -1,15 +1,21 @@
 #include "../minishell.h"
 
-void  free_2d(char **split)
+/*
+** free_2d - Free a 2D array of strings
+*/
+void	free_2d(char **split)
 {
-  int i;
+	int	i;
 
-  i = 0;
-  while (split[i])
-    free(split[i++]);
-  free(split);
+	i = 0;
+	while (split[i])
+		free(split[i++]);
+	free(split);
 }
 
+/*
+** is_all - Check if all characters in string are the same
+*/
 int	is_all(char *s, char c)
 {
 	if (!s || !c)
@@ -18,80 +24,43 @@ int	is_all(char *s, char c)
 	{
 		if (*s != c)
 			return (0);
-		s++;
+		++s;
 	}
 	return (1);
 }
 
+/*
+** substr - Extract substring from string
+*/
 char	*substr(char *s, int len)
 {
 	char	*res;
 	int		i;
 
-	i = 0;
 	if (!s || len < 1)
-		return (0);
-	res = malloc(sizeof(char) * len + 1);
+		return (NULL);
+	res = malloc(sizeof(char) * (len + 1));
 	if (!res)
-		return (0);
+		return (NULL);
+	i = 0;
 	while (i < len)
 	{
 		res[i] = s[i];
-		i++;
+		++i;
 	}
-	res[i] = 0;
+	res[i] = '\0';
 	return (res);
 }
 
+/*
+** find_word_len - Find length of alphanumeric word
+*/
 int	find_word_len(char *input)
 {
 	int	len;
 
 	len = 0;
 	while (*input && ft_isalnum(input[len]))
-		len++;
+		++len;
 	return (len);
-}
-
-char  *try_find(char *word, char **arr)
-{
-  int len;
-  int i;
-
-  len = ft_strlen(word);
-  i = 0;
-  while (arr[i])
-  {
-    if (!ft_strncmp(arr[i], word, len))
-        return (arr[i]);
-    i++;
-  }
-  return (0);
-}
-
-char	*remove_extra_chars(char *s, char c)
-{
-	char	*dst;
-	int	i;
-	int	j;
-
-	dst = malloc(sizeof(char) * ft_strlen(s) + 1);
-	if (!dst)
-			return (0);
-	i = 0;
-	j = 0;
-	while (s[i])
-	{
-		if (s[i] == c && (s[i + 1] && s[i + 1] == c))
-		{
-		  // do nothing, duplicate char
-		}
-		else if (s[i] == c && s[i + 1])
-			dst[j++] = c; // end of dup, append c
-		else
-			dst[j++] = s[i]; // append the word
-		i++;
-	}
-	dst[j] = 0;
-	return (dst);
 }
