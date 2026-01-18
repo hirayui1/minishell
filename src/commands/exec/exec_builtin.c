@@ -1,8 +1,6 @@
-#include "../../minishell.h"
+#include "../../../minishell.h"
 
-/*
-** is_builtin - Check if command is a shell builtin
-*/
+/* check if cmd is builtin */
 int	is_builtin(char **args)
 {
 	if (!args[0])
@@ -22,9 +20,7 @@ int	is_builtin(char **args)
 	return (0);
 }
 
-/*
-** run_echo - Helper for execute_builtin
-*/
+/* rebuild echo input string */
 static void	run_echo(t_cmd *cmd, t_shell **shell)
 {
 	char	*echo_input;
@@ -45,9 +41,7 @@ static void	run_echo(t_cmd *cmd, t_shell **shell)
 	free(echo_input);
 }
 
-/*
-** execute_builtin - Execute a builtin command with redirections
-*/
+/* run builtin with redirs */
 void	execute_builtin(t_cmd *cmd, t_shell **shell)
 {
 	setup_redirections(cmd->redirs);
@@ -65,9 +59,7 @@ void	execute_builtin(t_cmd *cmd, t_shell **shell)
 		run_echo(cmd, shell);
 }
 
-/*
-** execute_builtin_fork - Execute builtin in forked process
-*/
+/* run builtin in child */
 void	execute_builtin_fork(t_cmd *cmd, t_shell **shell)
 {
 	int	exit_status;
@@ -80,9 +72,7 @@ void	execute_builtin_fork(t_cmd *cmd, t_shell **shell)
 	exit(exit_status);
 }
 
-/*
-** execute_command - Execute a command (builtin or external)
-*/
+/* run cmd (builtin or external) */
 void	execute_command(t_cmd *cmd, t_shell **shell)
 {
 	pid_t	pid;

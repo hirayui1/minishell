@@ -1,12 +1,6 @@
 #include "../minishell.h"
 
-/*
- * add_redir - Create and add redirection to command's redirection list
- * @cmd: Command structure to add redirection to
- * @type: Type of redirection (REDIR_IN, REDIR_OUT, REDIR_APPEND, REDIR_HEREDOC)
- * @file: Filename for redirection (NULL for heredoc)
- * @delimiter: Heredoc delimiter string (NULL for file redirections)
- */
+/* add redir node to cmd */
 void	add_redir(t_cmd *cmd, t_redir_type type, char *file, char *delim)
 {
 	t_redir	*new_redir;
@@ -27,9 +21,7 @@ void	add_redir(t_cmd *cmd, t_redir_type type, char *file, char *delim)
 	cmd->redirs = new_redir;
 }
 
-/*
- * copy_quoted - Copy quoted content without the quotes
- */
+/* copy content inside quotes */
 static int	copy_quoted(char *dst, char **src, char quote)
 {
 	int	len;
@@ -46,9 +38,7 @@ static int	copy_quoted(char *dst, char **src, char quote)
 	return (len);
 }
 
-/*
- * calc_token_len - Calculate length of token (handling quotes)
- */
+/* get token length, skip quotes */
 static int	calc_token_len(char *input)
 {
 	int		len;
@@ -77,10 +67,7 @@ static int	calc_token_len(char *input)
 	return (len);
 }
 
-/*
- * extract_token - Extract next token, handling quotes
- * @input: Pointer to input string (advanced past token)
- */
+/* get next token, advances ptr */
 char	*extract_token(char **input)
 {
 	char	*token;
@@ -103,18 +90,14 @@ char	*extract_token(char **input)
 	return (token);
 }
 
-/*
- * skip_spaces - Advances pointer past whitespace
- */
+/* skip whitespace */
 void	skip_spaces(char **ptr)
 {
 	while (**ptr == ' ')
 		(*ptr)++;
 }
 
-/*
- * parse_redir_in - Parse input redirection or heredoc
- */
+/* handle < or << */
 void	parse_redir_in(char **ptr, t_cmd *cmd)
 {
 	char	*token;
@@ -137,9 +120,7 @@ void	parse_redir_in(char **ptr, t_cmd *cmd)
 	}
 }
 
-/*
- * parse_redir_out - Parse output redirection or append
- */
+/* handle > or >> */
 void	parse_redir_out(char **ptr, t_cmd *cmd)
 {
 	char	*token;

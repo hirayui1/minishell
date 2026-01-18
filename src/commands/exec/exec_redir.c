@@ -1,8 +1,6 @@
-#include "../../minishell.h"
+#include "../../../minishell.h"
 
-/*
-** open_redir_fd - Open file for redirection
-*/
+/* open file for redir */
 static int	open_redir_fd(t_redir *redir)
 {
 	int	fd;
@@ -17,9 +15,7 @@ static int	open_redir_fd(t_redir *redir)
 	return (fd);
 }
 
-/*
-** setup_redirections - Apply input/output redirections to file descriptors
-*/
+/* apply all redirections */
 void	setup_redirections(t_redir *redirs)
 {
 	int	fd;
@@ -46,9 +42,7 @@ void	setup_redirections(t_redir *redirs)
 	}
 }
 
-/*
-** handle_heredoc - Read input until delimiter is encountered
-*/
+/* read lines until delimiter */
 void	handle_heredoc(t_redir *redir, int pipefd[2])
 {
 	char	*line;
@@ -71,9 +65,7 @@ void	handle_heredoc(t_redir *redir, int pipefd[2])
 	close(pipefd[1]);
 }
 
-/*
-** collect_heredocs - Collect heredoc input in parent before fork
-*/
+/* gather heredoc input before fork */
 int	collect_heredocs(t_redir *redir, int *heredoc_fd)
 {
 	int	pipefd[2];
@@ -95,9 +87,7 @@ int	collect_heredocs(t_redir *redir, int *heredoc_fd)
 	return (0);
 }
 
-/*
-** apply_heredoc_fd - Apply heredoc fd in child process
-*/
+/* set heredoc as stdin */
 void	apply_heredoc_fd(int heredoc_fd)
 {
 	if (heredoc_fd != -1)

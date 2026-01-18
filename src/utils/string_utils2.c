@@ -1,8 +1,6 @@
-#include "../minishell.h"
+#include "../../minishell.h"
 
-/*
-** skip_in_quotes - Skip content inside quotes, copy to dst
-*/
+/* copy quoted section */
 static int	skip_in_quotes(char *s, char *dst, int *i, int j)
 {
 	char	quote;
@@ -16,9 +14,7 @@ static int	skip_in_quotes(char *s, char *dst, int *i, int j)
 	return (j);
 }
 
-/*
-** remove_extra_chars - Remove consecutive duplicate chars (quote-aware)
-*/
+/* collapse repeated chars */
 char	*remove_extra_chars(char *s, char c)
 {
 	char	*dst;
@@ -45,9 +41,7 @@ char	*remove_extra_chars(char *s, char c)
 	return (dst);
 }
 
-/*
-** try_find - Search for word in array
-*/
+/* find word in array */
 char	*try_find(char *word, char **arr)
 {
 	int	len;

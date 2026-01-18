@@ -1,8 +1,6 @@
-#include "../minishell.h"
+#include "../../minishell.h"
 
-/*
-** free_2d - Free a 2D array of strings
-*/
+/* free string array */
 void	free_2d(char **split)
 {
 	int	i;
@@ -13,9 +11,7 @@ void	free_2d(char **split)
 	free(split);
 }
 
-/*
-** is_all - Check if all characters in string are the same
-*/
+/* check if all chars match c */
 int	is_all(char *s, char c)
 {
 	if (!s || !c)
@@ -29,9 +25,7 @@ int	is_all(char *s, char c)
 	return (1);
 }
 
-/*
-** substr - Extract substring from string
-*/
+/* get substring of len */
 char	*substr(char *s, int len)
 {
 	char	*res;
@@ -52,9 +46,7 @@ char	*substr(char *s, int len)
 	return (res);
 }
 
-/*
-** find_word_len - Find length of alphanumeric word
-*/
+/* get alnum word length */
 int	find_word_len(char *input)
 {
 	int	len;
@@ -63,4 +55,23 @@ int	find_word_len(char *input)
 	while (*input && ft_isalnum(input[len]))
 		++len;
 	return (len);
+}
+
+/* check for unmatched quotes */
+int	has_unclosed_quote(char *input)
+{
+	int	in_squote;
+	int	in_dquote;
+
+	in_squote = 0;
+	in_dquote = 0;
+	while (*input)
+	{
+		if (*input == '\'' && !in_dquote)
+			in_squote = !in_squote;
+		else if (*input == '"' && !in_squote)
+			in_dquote = !in_dquote;
+		input++;
+	}
+	return (in_squote || in_dquote);
 }

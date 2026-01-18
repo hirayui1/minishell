@@ -1,8 +1,6 @@
-#include "../minishell.h"
+#include "../../minishell.h"
 
-/*
-** find_envar - Find environment variable value
-*/
+/* get env var value */
 char	*find_envar(char *input, t_shell **shell)
 {
 	t_env	*envp;
@@ -22,9 +20,7 @@ char	*find_envar(char *input, t_shell **shell)
 	return (NULL);
 }
 
-/*
-** skip_single_quote - Skip single quoted section, add to length
-*/
+/* skip 'quoted' section */
 static void	skip_single_quote(char **input, int *len)
 {
 	*len += 2;
@@ -38,9 +34,7 @@ static void	skip_single_quote(char **input, int *len)
 		++(*input);
 }
 
-/*
-** calc_in_dquote - Calculate length inside double quotes
-*/
+/* calc len inside "quotes" */
 static void	calc_in_dquote(char **input, int *len, t_shell **shell)
 {
 	*len += 2;
@@ -59,9 +53,7 @@ static void	calc_in_dquote(char **input, int *len, t_shell **shell)
 		++(*input);
 }
 
-/*
-** calc_total_len - Calculate total length of expanded string
-*/
+/* calc expanded string len */
 int	calc_total_len(char *input, int *len, t_shell **shell)
 {
 	while (*input)
@@ -81,9 +73,7 @@ int	calc_total_len(char *input, int *len, t_shell **shell)
 	return (0);
 }
 
-/*
-** copy_single_quote - Copy single quoted content with quotes
-*/
+/* copy 'quoted' content */
 static void	copy_single_quote(char **out, char **input)
 {
 	*(*out)++ = *(*input)++;
@@ -93,9 +83,7 @@ static void	copy_single_quote(char **out, char **input)
 		*(*out)++ = *(*input)++;
 }
 
-/*
-** copy_in_dquote - Copy double quoted content with expansion and quotes
-*/
+/* copy "quoted" with expansion */
 static void	copy_in_dquote(char **out, char **input, t_shell **shell)
 {
 	*(*out)++ = *(*input)++;
@@ -110,9 +98,7 @@ static void	copy_in_dquote(char **out, char **input, t_shell **shell)
 		*(*out)++ = *(*input)++;
 }
 
-/*
-** rebuild_str - Build expanded string with variable values
-*/
+/* build expanded string */
 char	*rebuild_str(char *input, int len, t_shell **shell)
 {
 	char	*res;
@@ -137,9 +123,7 @@ char	*rebuild_str(char *input, int len, t_shell **shell)
 	return (res);
 }
 
-/*
-** expnd - Expand environment variables in input string
-*/
+/* expand $vars in input */
 char	*expnd(char *input, t_shell **shell)
 {
 	int	len;

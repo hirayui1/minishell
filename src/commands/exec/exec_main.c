@@ -1,8 +1,6 @@
-#include "../../minishell.h"
+#include "../../../minishell.h"
 
-/*
-** resolve_dir - Resolve path for command execution
-*/
+/* find cmd path */
 static char	*resolve_dir(char **split, t_shell **shell, int *flag)
 {
 	char	*dir;
@@ -17,9 +15,7 @@ static char	*resolve_dir(char **split, t_shell **shell, int *flag)
 	return (dir);
 }
 
-/*
-** exe - Execute external command in child process
-*/
+/* fork and run external cmd */
 void	exe(char *dir, char **split, t_shell **shell)
 {
 	int		status;
@@ -41,9 +37,7 @@ void	exe(char *dir, char **split, t_shell **shell)
 		perror("bash");
 }
 
-/*
-** try_exec - Locate and execute command from input string
-*/
+/* find and run cmd from string */
 int	try_exec(char *input, t_shell **shell)
 {
 	char	**split;
@@ -72,9 +66,7 @@ int	try_exec(char *input, t_shell **shell)
 	return (0);
 }
 
-/*
-** try_exec_external - Find and execute external command with redirections
-*/
+/* run external cmd with redirs */
 int	try_exec_external(t_cmd *cmd, t_shell **shell)
 {
 	char	*dir;
@@ -107,9 +99,7 @@ int	try_exec_external(t_cmd *cmd, t_shell **shell)
 	return (0);
 }
 
-/*
-** exe_with_redir - Execute external command with redirections
-*/
+/* fork and exec with redirs */
 void	exe_with_redir(t_cmd *cmd, t_shell **shell, char *dir, int flag)
 {
 	int		status;

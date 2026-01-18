@@ -1,4 +1,4 @@
-#include "../../minishell.h"
+#include "../../../minishell.h"
 
 void	wait_for_children(int count, t_shell **shell)
 {

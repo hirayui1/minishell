@@ -1,8 +1,6 @@
-#include "../../minishell.h"
+#include "../../../minishell.h"
 
-/*
-** exe_child - Child process execution for exe
-*/
+/* child: run execve */
 void	exe_child(char *dir, char **split, char **env, t_shell **shell)
 {
 	sig_manager(1);
@@ -17,9 +15,7 @@ void	exe_child(char *dir, char **split, char **env, t_shell **shell)
 	exit(1);
 }
 
-/*
-** exe_parent - Parent process handling for exe
-*/
+/* parent: get exit status */
 void	exe_parent(int status, char **env, t_shell **shell)
 {
 	if (WIFEXITED(status))
@@ -29,9 +25,7 @@ void	exe_parent(int status, char **env, t_shell **shell)
 	free_2d(env);
 }
 
-/*
-** check_access - Search for executable in PATH directories
-*/
+/* search PATH dirs for cmd */
 char	*check_access(char *filename, char **path)
 {
 	int		i;
@@ -52,9 +46,7 @@ char	*check_access(char *filename, char **path)
 	return (free_2d(path), NULL);
 }
 
-/*
-** find_path - Find executable in system PATH
-*/
+/* lookup cmd in PATH */
 char	*find_path(char *filename, t_shell **shell)
 {
 	char	**path;
@@ -69,9 +61,7 @@ char	*find_path(char *filename, t_shell **shell)
 	return (dir);
 }
 
-/*
-** exe_redir_child - Child process for exe_with_redir
-*/
+/* child: setup redirs and exec */
 void	exe_redir_child(t_cmd *cmd, t_shell **shell, char *dir, char **env)
 {
 	sig_manager(1);

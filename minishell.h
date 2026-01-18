@@ -89,6 +89,7 @@ int		is_all(char *s, char c);
 void	free_2d(char **split);
 char	*substr(char *s, int len);
 int		find_word_len(char *input);
+int		has_unclosed_quote(char *input);
 
 /* utils/string_utils2 */
 char	*remove_extra_chars(char *s, char c);
@@ -122,7 +123,7 @@ void	exprt(char *input, t_shell **shell);
 void	echo(char *input, t_shell **shell);
 
 /* utils/parse.c */
-void	parse_command(char *input, t_cmd *cmd, t_shell **shell);
+void	parse_command(char *input, t_cmd *cmd);
 void	free_cmd(t_cmd *cmd);
 
 /* utils/parse_redir.c */

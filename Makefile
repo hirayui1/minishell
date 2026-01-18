@@ -3,9 +3,10 @@ FLAGS	:= -Wall -Wextra -Werror -Ilibft
 
 NAME	:= minishell
 
-UDIR	:= utils
-CDIR	:= $(UDIR)/commands
-EDIR	:= $(UDIR)/errors
+SDIR	:= src
+UDIR	:= $(SDIR)/utils
+CDIR	:= $(SDIR)/commands
+EDIR	:= $(CDIR)/exec
 
 UTILS	:= $(UDIR)/input_utils.c \
 		 $(UDIR)/input_utils2.c \
@@ -15,29 +16,27 @@ UTILS	:= $(UDIR)/input_utils.c \
 		 $(UDIR)/expand_utils.c \
 	   $(UDIR)/sig_handlers.c \
 	   $(UDIR)/string_utils.c \
-	   $(UDIR)/string_utils2.c \
-	   $(UDIR)/exit_handler.c \
-	   $(UDIR)/parse.c \
-	   $(UDIR)/parse_redir.c
+	   $(UDIR)/string_utils2.c
 COMMANDS:= $(CDIR)/cd.c \
 	   $(CDIR)/pwd.c \
 	   $(CDIR)/env.c \
 	   $(CDIR)/unset.c \
 	   $(CDIR)/export.c \
-	   $(CDIR)/echo.c \
-	   $(CDIR)/exec_main.c \
-	   $(CDIR)/exec_utils.c \
-	   $(CDIR)/exec_redir.c \
-	   $(CDIR)/exec_builtin.c \
-	   $(CDIR)/exec_pipe.c \
-	   $(CDIR)/exec_pipe2.c \
-	   $(CDIR)/exec_pipe3.c
-ERRORS	:= $(EDIR)/error_prompt.c
-
+	   $(CDIR)/echo.c
+EXEC	:= $(EDIR)/exec_main.c \
+	   $(EDIR)/exec_utils.c \
+	   $(EDIR)/exec_redir.c \
+	   $(EDIR)/exec_builtin.c \
+	   $(EDIR)/exec_pipe.c \
+	   $(EDIR)/exec_pipe2.c \
+	   $(EDIR)/exec_pipe3.c
 SRCS	:= main.c \
+		$(SDIR)/exit_handler.c \
+		$(SDIR)/parse.c \
+		$(SDIR)/parse_redir.c \
 	   $(UTILS) \
-	   $(ERRORS) \
 	   $(COMMANDS) \
+	   $(EXEC) \
 	   libft/libft.a
 
 OBJS	:= $(SRCS:.c=.o)

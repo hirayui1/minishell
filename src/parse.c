@@ -1,8 +1,6 @@
 #include "../minishell.h"
 
-/*
- * parse_redir - Parse and add a single redirection from input
- */
+/* handle < or > */
 static void	parse_redir(char **ptr, t_cmd *cmd)
 {
 	if (**ptr == '<')
@@ -11,9 +9,7 @@ static void	parse_redir(char **ptr, t_cmd *cmd)
 		parse_redir_out(ptr, cmd);
 }
 
-/*
- * add_arg - Add argument to args array (manual realloc replacement)
- */
+/* append arg to array */
 static char	**add_arg(char **args, char *arg, int count)
 {
 	char	**new_args;
@@ -34,21 +30,18 @@ static char	**add_arg(char **args, char *arg, int count)
 	return (new_args);
 }
 
-/*
- * parse_command - Parse command string into arguments and redirections
- */
-void	parse_command(char *input, t_cmd *cmd, t_shell **shell)
+/* split input into args and redirections */
+void	parse_command(char *input, t_cmd *cmd)
 {
 	char	*ptr;
 	char	**args_list;
 	int		arg_count;
 	char	*arg;
 
-	(void)shell;
 	cmd->args = NULL;
 	cmd->redirs = NULL;
-	ptr = input;
 	args_list = NULL;
+	ptr = input;
 	arg_count = 0;
 	while (*ptr)
 	{
@@ -66,9 +59,7 @@ void	parse_command(char *input, t_cmd *cmd, t_shell **shell)
 	cmd->args = args_list;
 }
 
-/*
- * free_cmd - Free all allocated memory in command structure
- */
+/* cleanup cmd struct */
 void	free_cmd(t_cmd *cmd)
 {
 	t_redir	*redir;

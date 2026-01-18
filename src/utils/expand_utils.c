@@ -1,8 +1,6 @@
-#include "../minishell.h"
+#include "../../minishell.h"
 
-/*
-** handle_exit_status - Process $? expansion and update length
-*/
+/* handle $? expansion */
 int	handle_exit_status(int *len, t_shell **shell)
 {
 	char	*tmp_exit;
@@ -18,9 +16,7 @@ int	handle_exit_status(int *len, t_shell **shell)
 	return (0);
 }
 
-/*
-** calc_var_len - Calculate length contribution from a variable
-*/
+/* get var value length */
 void	calc_var_len(char **input, int *len, t_shell **shell)
 {
 	char	*tmp;
@@ -40,9 +36,7 @@ void	calc_var_len(char **input, int *len, t_shell **shell)
 	*input += word_len + 1;
 }
 
-/*
-** insert_var - Insert variable value into output string
-*/
+/* copy var value to output */
 void	insert_var(char **out, char **input, t_shell **shell)
 {
 	char	*val;
