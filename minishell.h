@@ -93,7 +93,6 @@ int		has_unclosed_quote(char *input);
 
 /* utils/string_utils2 */
 char	*remove_extra_chars(char *s, char c);
-char	*try_find(char *word, char **arr);
 
 /* utils/expand.c */
 char	*expnd(char *input, t_shell **shell);
@@ -106,9 +105,6 @@ void	insert_var(char **out, char **input, t_shell **shell);
 
 /* utils/sig_handlers */
 void	sig_manager(int level);
-
-/* utils/errors/error_prompts */
-void	write_error(void);
 
 /* utils/exit_handler */
 void	ft_exit(t_shell **shell, char **input, int exit_code);
@@ -134,8 +130,6 @@ void	parse_redir_in(char **ptr, t_cmd *cmd);
 void	parse_redir_out(char **ptr, t_cmd *cmd);
 
 /* utils/commands/exec_main.c */
-void	exe(char *dir, char **split, t_shell **shell);
-int		try_exec(char *input, t_shell **shell);
 int		try_exec_external(t_cmd *cmd, t_shell **shell);
 void	exe_with_redir(t_cmd *cmd, t_shell **shell, char *dir, int flag);
 

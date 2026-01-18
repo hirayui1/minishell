@@ -40,20 +40,3 @@ char	*remove_extra_chars(char *s, char c)
 	dst[j] = '\0';
 	return (dst);
 }
-
-/* find word in array */
-char	*try_find(char *word, char **arr)
-{
-	int	len;
-	int	i;
-
-	len = ft_strlen(word);
-	i = 0;
-	while (arr[i])
-	{
-		if (!ft_strncmp(arr[i], word, len))
-			return (arr[i]);
-		++i;
-	}
-	return (NULL);
-}
