@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   input_utils2.c                                     :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: sandrzej <marvin@42.fr>                    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2026/01/22 16:31:53 by sandrzej          #+#    #+#             */
+/*   Updated: 2026/01/22 16:31:54 by sandrzej         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "../../minishell.h"
 
 static t_pipeline	*build_pipeline(char **segs, int count, t_shell **shell)
@@ -37,6 +49,7 @@ int	run_pipeline(char *input, int pipe_count, t_shell **shell)
 	t_pipeline	*pl;
 
 	segments = split_by_pipe(input, pipe_count);
+	free(input);
 	if (!segments)
 		return (1);
 	pl = build_pipeline(segments, pipe_count + 1, shell);

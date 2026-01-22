@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   exec_pipe2.c                                       :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: bkarabab <bkarabab@student.42warsaw.p      +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2026/01/22 16:38:21 by bkarabab          #+#    #+#             */
+/*   Updated: 2026/01/22 16:41:21 by bkarabab         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "../../../minishell.h"
 
 static void	setup_pipe_fds(int in_fd, int out_fd)
@@ -24,22 +36,39 @@ static void	pipe_exec_external(t_cmd *cmd, t_shell **shell)
 		dir = cmd->args[0];
 	env = lst_to_array((*shell)->envp);
 	execve(dir, cmd->args, env);
+	free(dir);
+	free_2d(env);
 	perror(cmd->args[0]);
+	free_cmd(cmd);
+	if (dir)
+		free(dir);
+	cleanup_shell(shell);
 	exit(EXIT_CMD_NOT_FOUND);
 }
 
 static void	child_process(t_cmd *cmd, int in_fd, int out_fd, t_shell **shell)
 {
+	int	status;
+
 	sig_manager(3);
 	setup_pipe_fds(in_fd, out_fd);
 	apply_heredoc_fd(cmd->heredoc_fd);
 	setup_redirections(cmd->redirs);
-	if (is_builtin(cmd->args))
+	if (!cmd->args || !cmd->args[0]) // LOL1 : free cmd in childproc
+	{
+		cleanup_shell(shell);
+		exit(0);
+	}
+	else if (is_builtin(cmd->args))
 	{
 		execute_builtin(cmd, shell);
-		exit((*shell)->last_exit_status);
+		status = (*shell)->last_exit_status;
+		cleanup_shell(shell);
+		exit(status);
+		// LOL2 : cannot do shell->last_exit_status if we free shell
 	}
 	pipe_exec_external(cmd, shell);
+	cleanup_shell(shell);
 }
 
 static void	run_pipe_cmd(t_cmd *cmd, int *in_fd, int pipefd[2], t_shell **shell)
@@ -77,6 +106,7 @@ void	execute_pipeline(t_pipeline *pl, t_shell **shell)
 	in_fd = STDIN_FILENO;
 	i = 0;
 	cmd = pl->cmds;
+	(*shell)->pl = pl;
 	while (i < pl->cmd_count)
 	{
 		if (i < pl->cmd_count - 1)
@@ -85,6 +115,7 @@ void	execute_pipeline(t_pipeline *pl, t_shell **shell)
 		cmd = cmd->next;
 		i++;
 	}
+	(*shell)->pl = NULL;
 	sig_manager(1);
 	wait_for_children(pl->cmd_count, shell);
 	sig_manager(0);

@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   input_utils.c                                      :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: sandrzej <marvin@42.fr>                    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2026/01/22 16:32:20 by sandrzej          #+#    #+#             */
+/*   Updated: 2026/01/22 16:32:21 by sandrzej         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "../../minishell.h"
 
 static char	*read_until_closed(char *input)
@@ -81,5 +93,5 @@ int	cmd_manager(char *input, t_shell **shell)
 		return (0);
 	}
 	run_pipeline(input, pipe_count, shell);
-	return (free(input), 0);
+	return (0);
 }

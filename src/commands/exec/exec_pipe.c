@@ -1,11 +1,22 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   exec_pipe.c                                        :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: sandrzej <marvin@42.fr>                    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2026/01/22 16:31:23 by sandrzej          #+#    #+#             */
+/*   Updated: 2026/01/22 16:31:24 by sandrzej         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
 
 #include "../../../minishell.h"
 
 int	count_pipes(char *input)
 {
-	int		count;
-	int		in_squote;
-	int		in_dquote;
+	int	count;
+	int	in_squote;
+	int	in_dquote;
 
 	count = 0;
 	in_squote = 0;

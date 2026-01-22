@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   exec_main.c                                        :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: sandrzej <marvin@42.fr>                    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2026/01/22 16:31:06 by sandrzej          #+#    #+#             */
+/*   Updated: 2026/01/22 16:31:07 by sandrzej         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "../../../minishell.h"
 
 /* run external cmd with redirs */
@@ -24,7 +36,7 @@ int	try_exec_external(t_cmd *cmd, t_shell **shell)
 	if (access(dir, X_OK))
 	{
 		(*shell)->last_exit_status = EXIT_NOT_EXECUTABLE;
-		perror("permission denied");
+		perror(dir);
 		if (!flag)
 			free(dir);
 		return (0);
