@@ -3,17 +3,16 @@
 /*                                                        :::      ::::::::   */
 /*   list_ops.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: bkarabab <bkarabab@student.42warsaw.p      +#+  +:+       +#+        */
+/*   By: sandrzej <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2026/01/22 16:36:14 by bkarabab          #+#    #+#             */
-/*   Updated: 2026/01/22 16:36:27 by bkarabab         ###   ########.fr       */
+/*   Created: 2026/01/22 16:31:57 by sandrzej          #+#    #+#             */
+/*   Updated: 2026/01/22 16:32:00 by sandrzej         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../minishell.h"
 
-	t_env *
-	lst_append(char *val, t_env *envp)
+t_env * lst_append(char *val, t_env *envp)
 {
 	while (envp->next)
 		envp = envp->next;

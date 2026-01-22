@@ -17,18 +17,19 @@ static char	*read_until_closed(char *input)
 	char	*line;
 	char	*tmp;
 
+  sig_manager(2);
 	while (has_unclosed_quote(input))
 	{
 		line = readline("> ");
 		if (!line)
-			return (input);
+			return (sig_manager(1), input);
 		tmp = ft_strjoin(input, "\n");
 		free(input);
 		input = ft_strjoin(tmp, line);
 		free(tmp);
 		free(line);
 	}
-	return (input);
+	return (sig_manager(1), input);
 }
 
 void	input_handler(char **input, t_shell **shell)
