@@ -44,7 +44,7 @@ void	input_handler(char **input, t_shell **shell)
 	char	*tmp;
 
 	if (!*input)
-		ft_exit(shell, input, 1);
+		ft_exit(shell, input, EXIT_FAILURE);
 	else if (ft_strlen(*input))
 	{
 		if (has_unclosed_quote(*input))
@@ -54,7 +54,7 @@ void	input_handler(char **input, t_shell **shell)
 			free(tmp);
 			if (!*input)
 			{
-				(*shell)->last_exit_status = 2; // process terminated by SIGINT (?)
+				(*shell)->last_exit_status = EXIT_MISUSE;
 				return ;
 			}
 		}
@@ -85,7 +85,7 @@ int	run_single_cmd(char *input, t_shell **shell)
 	cmd.heredoc_fd = -1;
 	if (collect_heredocs(cmd.redirs, &cmd.heredoc_fd) == 1)
 	{
-		(*shell)->last_exit_status = 130;
+		(*shell)->last_exit_status = EXIT_CHILD_SIGINT;
 		return (free_cmd(&cmd), 1);
 	}
 	if (!cmd.args || !cmd.args[0])
@@ -95,8 +95,9 @@ int	run_single_cmd(char *input, t_shell **shell)
 		return (free_cmd(&cmd), 0);
 	}
 	execute_command(&cmd, shell);
-	if (cmd.heredoc_fd != -1)
-		close(cmd.heredoc_fd);
+	// RED
+	// if (cmd.heredoc_fd != -1)
+	// 	close(cmd.heredoc_fd);
 	return (free_cmd(&cmd), 0);
 }
 
@@ -107,7 +108,7 @@ int	cmd_manager(char *input, t_shell **shell)
 	input = normalizer(input, shell);
 	pipe_count = count_pipes(input);
 	if (pipe_count == 0)
-	{
+	{ (c)
 		run_single_cmd(input, shell);
 		return (0);
 	}

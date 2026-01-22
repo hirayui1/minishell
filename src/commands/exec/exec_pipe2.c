@@ -57,7 +57,7 @@ static void	child_process(t_cmd *cmd, int in_fd, int out_fd, t_shell **shell)
 	{
 		free_pipeline((*shell)->pl);
 		cleanup_shell(shell);
-		exit(0);
+		exit(EXIT_SUCCESS);
 	}
 	else if (is_builtin(cmd->args))
 	{

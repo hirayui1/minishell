@@ -24,7 +24,7 @@ void	wait_for_children(int count, t_shell **shell)
 		if (WIFEXITED(status))
 			(*shell)->last_exit_status = WEXITSTATUS(status);
 		else if (WIFSIGNALED(status))
-			(*shell)->last_exit_status = EXIT_SIGNAL_BASE + WTERMSIG(status);
+			(*shell)->last_exit_status = EXIT_CHILD_SUCCESS + WTERMSIG(status);
 		i++;
 	}
 }

@@ -11,5 +11,5 @@ void	print_env(t_shell **shell)
 			printf("%s\n", envp->val);
 		envp = envp->next;
 	}
-	(*shell)->last_exit_status = 0;
+	(*shell)->last_exit_status = EXIT_SUCCESS;
 }

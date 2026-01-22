@@ -21,7 +21,7 @@ void	pwd(t_shell **shell)
 	if (!tmp)
 	{
 		perror("pwd");
-		(*shell)->last_exit_status = 1;
+		(*shell)->last_exit_status = EXIT_FAILURE;
 		return ;
 	}
 	printf("%s\n", tmp);
@@ -32,5 +32,5 @@ void	pwd(t_shell **shell)
 		envp->val = ft_strjoin("PWD=", tmp);
 	}
 	free(tmp);
-	(*shell)->last_exit_status = 0;
+	(*shell)->last_exit_status = EXIT_SUCCESS;
 }

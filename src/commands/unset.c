@@ -18,7 +18,7 @@ void	unset(char *input, t_shell **shell)
 
 	if (!*input)
 	{
-		(*shell)->last_exit_status = 0;
+		(*shell)->last_exit_status = EXIT_SUCCESS;
 		return ;
 	}
 	envp = find_key(input, (*shell)->envp);
@@ -27,5 +27,5 @@ void	unset(char *input, t_shell **shell)
 		free(envp->val);
 		envp->val = ft_strdup("");
 	}
-	(*shell)->last_exit_status = 0;
+	(*shell)->last_exit_status = EXIT_SUCCESS;
 }

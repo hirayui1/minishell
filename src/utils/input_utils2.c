@@ -31,7 +31,7 @@ static t_pipeline	*build_pipeline(char **segs, int count, t_shell **shell)
 		pl->cmds[i].heredoc_fd = -1;
 		if (collect_heredocs(pl->cmds[i].redirs, &pl->cmds[i].heredoc_fd) == 1)
 		{
-			(*shell)->last_exit_status = 130;
+			(*shell)->last_exit_status = EXIT_CHILD_SIGINT;
 			pl->cmd_count = i + 1;
 			return (free_pipeline(pl), NULL);
 		}

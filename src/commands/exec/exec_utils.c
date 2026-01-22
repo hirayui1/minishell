@@ -36,7 +36,7 @@ void	exe_parent(int status, char **env, t_shell **shell)
 	if (WIFEXITED(status))
 		(*shell)->last_exit_status = WEXITSTATUS(status);
 	else if (WIFSIGNALED(status))
-		(*shell)->last_exit_status = EXIT_SIGNAL_BASE + WTERMSIG(status);
+		(*shell)->last_exit_status = EXIT_CHILD_SUCCESS + WTERMSIG(status);
 	free_2d(env);
 }
 
@@ -92,5 +92,5 @@ void	exe_redir_child(t_cmd *cmd, t_shell **shell, char *dir, char **env)
 	else if (errno == EACCES)
 		ft_exit(shell, NULL, EXIT_NOT_EXECUTABLE);
 	else
-		ft_exit(shell, NULL, 1);
+		ft_exit(shell, NULL, EXIT_FAILURE);
 }

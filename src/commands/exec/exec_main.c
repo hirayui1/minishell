@@ -25,7 +25,7 @@ int	try_exec_external(t_cmd *cmd, t_shell **shell)
 		dir = find_path(cmd->args[0], shell);
 	if (!dir)
 	{
-		(*shell)->last_exit_status = 127;
+		(*shell)->last_exit_status = EXIT_CMD_NOT_FOUND;
 		return (printf("-bash: %s: command not found\n", cmd->args[0]), 1);
 	}
 	if (access(dir, X_OK))
@@ -61,7 +61,7 @@ void	exe_with_redir(t_cmd *cmd, t_shell **shell, char *dir)
 		if (WIFEXITED(status))
 			(*shell)->last_exit_status = WEXITSTATUS(status);
 		else if (WIFSIGNALED(status))
-			(*shell)->last_exit_status = EXIT_SIGNAL_BASE + WTERMSIG(status);
+			(*shell)->last_exit_status = EXIT_CHILD_SUCCESS + WTERMSIG(status);
 		free_2d(env);
 		free(dir);
 	}

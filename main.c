@@ -6,7 +6,7 @@ void	initialize(t_shell **shell, char **envp)
 	*shell = malloc(sizeof(t_shell));
 	(*shell)->pwd = ft_strdup(getenv("PWD"));
 	(*shell)->envp = load_list(envp);
-	(*shell)->last_exit_status = 0;
+	(*shell)->last_exit_status = EXIT_SUCCESS;
 }
 
 void	cleanup_shell(t_shell **shell)

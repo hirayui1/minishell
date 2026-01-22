@@ -41,7 +41,7 @@ void	setup_redirections(t_redir *redirs)
 			if (fd == -1)
 			{
 				perror("minishell");
-				exit(1);
+				exit(EXIT_FAILURE);
 			}
 			if (redirs->type == REDIR_IN)
 				target = STDIN_FILENO;
@@ -105,8 +105,9 @@ int	collect_heredocs(t_redir *redir, int *heredoc_fd)
 					close(*heredoc_fd);
 				return (1);
 			}
-			if (*heredoc_fd != -1)
-				close(*heredoc_fd);
+			// RED
+			// if (*heredoc_fd != -1)
+			// 	close(*heredoc_fd);
 			*heredoc_fd = pipefd[0];
 		}
 		redir = redir->next;

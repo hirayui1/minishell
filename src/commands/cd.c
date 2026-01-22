@@ -33,18 +33,18 @@ static int	cd_home(t_shell **shell)
 	envp = find_key("HOME", (*shell)->envp);
 	if (!envp)
 	{
-		(*shell)->last_exit_status = 1;
+		(*shell)->last_exit_status = EXIT_FAILURE;
 		printf("-bash: cd: HOME not set\n");
 		return (1);
 	}
 	if (chdir(ft_strchr(envp->val, '=') + 1) == -1)
 	{
 		perror("-bash: cd");
-		(*shell)->last_exit_status = 1;
+		(*shell)->last_exit_status = EXIT_FAILURE;
 		return (1);
 	}
 	update_pwd(shell);
-	(*shell)->last_exit_status = 0;
+	(*shell)->last_exit_status = EXIT_SUCCESS;
 	return (0);
 }
 
@@ -64,12 +64,12 @@ void	cd(char *input, t_shell **shell)
 	if (chdir(dir) == 0)
 	{
 		update_pwd(shell);
-		(*shell)->last_exit_status = 0;
+		(*shell)->last_exit_status = EXIT_SUCCESS;
 	}
 	else
 	{
 		perror("-bash: cd");
-		(*shell)->last_exit_status = 1;
+		(*shell)->last_exit_status = EXIT_FAILURE;
 	}
 	free(dir);
 }

@@ -1,6 +1,6 @@
 CC	:= cc
 FLAGS	:= -Wall -Wextra -Werror -Ilibft
-
+#TODO: -Iminishell
 NAME	:= minishell
 
 SDIR	:= src
@@ -34,6 +34,7 @@ SRCS	:= main.c \
 		$(SDIR)/exit_handler.c \
 		$(SDIR)/parse.c \
 		$(SDIR)/parse_redir.c \
+		$(SDIR)/parse_redir2.c \
 	   $(UTILS) \
 	   $(COMMANDS) \
 	   $(EXEC) \

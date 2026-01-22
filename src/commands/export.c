@@ -16,10 +16,10 @@ void	exprt(char *input, t_shell **shell)
 {
 	if (!*input)
 	{
-		(*shell)->last_exit_status = 0;
+		(*shell)->last_exit_status = EXIT_SUCCESS;
 		return ;
 	}
 	if (ft_strchr(input, '='))
 		lst_append(input, (*shell)->envp);
-	(*shell)->last_exit_status = 0;
+	(*shell)->last_exit_status = EXIT_SUCCESS;
 }
