@@ -16,13 +16,20 @@ static char	*read_until_closed(char *input)
 {
 	char	*line;
 	char	*tmp;
+	int		stdin_backup;
 
-  sig_manager(2);
+	stdin_backup = dup(STDIN_FILENO);
+	sig_manager(2);
 	while (has_unclosed_quote(input))
 	{
 		line = readline("> ");
 		if (!line)
-			return (sig_manager(1), input);
+		{
+			dup2(stdin_backup, STDIN_FILENO);
+			close(stdin_backup);
+			free(input);
+			return (sig_manager(0), NULL);
+		}
 		tmp = ft_strjoin(input, "\n");
 		free(input);
 		input = ft_strjoin(tmp, line);
@@ -34,12 +41,23 @@ static char	*read_until_closed(char *input)
 
 void	input_handler(char **input, t_shell **shell)
 {
+	char	*tmp;
+
 	if (!*input)
 		ft_exit(shell, input, 1);
 	else if (ft_strlen(*input))
 	{
 		if (has_unclosed_quote(*input))
+		{
+			tmp = *input;
 			*input = read_until_closed(ft_strdup(*input));
+			free(tmp);
+			if (!*input)
+			{
+				(*shell)->last_exit_status = 2; // process terminated by SIGINT (?)
+				return ;
+			}
+		}
 		add_history(*input);
 		cmd_manager(*input, shell);
 	}

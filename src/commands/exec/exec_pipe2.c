@@ -36,7 +36,6 @@ static void	pipe_exec_external(t_cmd *cmd, t_shell **shell)
 		dir = cmd->args[0];
 	env = lst_to_array((*shell)->envp);
 	execve(dir, cmd->args, env);
-	free(dir);
 	free_2d(env);
 	perror(cmd->args[0]);
 	free_cmd(cmd);
