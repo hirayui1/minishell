@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   minishell.h                                        :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: sandrzej <marvin@42.fr>                    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2026/01/22 16:28:57 by sandrzej          #+#    #+#             */
+/*   Updated: 2026/01/22 16:28:58 by sandrzej         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #ifndef MINISHELL_H
 # define MINISHELL_H
 
@@ -28,14 +40,6 @@ typedef struct s_env
 	char			*val;
 }	t_env;
 
-typedef struct s_shell
-{
-	struct s_shell	*next;
-	struct s_env	*envp;
-	int				last_exit_status;
-	char			*pwd;
-}	t_shell;
-
 typedef enum e_redir_type
 {
 	REDIR_IN,
@@ -65,6 +69,15 @@ typedef struct s_pipeline
 	t_cmd		*cmds;
 	int			cmd_count;
 }	t_pipeline;
+
+typedef struct s_shell
+{
+	struct s_shell	*next;
+	struct s_env	*envp;
+	int				last_exit_status;
+  t_pipeline *pl;
+	char			*pwd;
+}	t_shell;
 
 /* utils/list_utils */
 t_env	*load_list(char **envp);
