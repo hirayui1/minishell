@@ -42,20 +42,19 @@ void	insert_var(char **out, char **input, t_shell **shell)
 	char	*val;
 	int		len;
 
+	len = find_word_len(*input + 1);
+	val = find_envar(*input, shell);
 	if ((*input)[1] == '?')
 	{
-		val = ft_itoa((*shell)->last_exit_status);
 		len = 1;
-	}
-	else
-	{
-		val = find_envar(*input, shell);
-		len = find_word_len(*input + 1);
+		val = ft_itoa((*shell)->last_exit_status);
 	}
 	if (val)
 	{
 		ft_memcpy(*out, val, ft_strlen(val));
 		*out += ft_strlen(val);
+		if ((*input)[1] == '?')
+			free(val);
 	}
 	else if (len == 0)
 	{

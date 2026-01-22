@@ -30,6 +30,7 @@ static void	pipe_exec_external(t_cmd *cmd, t_shell **shell)
 
 static void	child_process(t_cmd *cmd, int in_fd, int out_fd, t_shell **shell)
 {
+	sig_manager(3);
 	setup_pipe_fds(in_fd, out_fd);
 	apply_heredoc_fd(cmd->heredoc_fd);
 	setup_redirections(cmd->redirs);
@@ -84,5 +85,7 @@ void	execute_pipeline(t_pipeline *pl, t_shell **shell)
 		cmd = cmd->next;
 		i++;
 	}
+	sig_manager(1);
 	wait_for_children(pl->cmd_count, shell);
+	sig_manager(0);
 }

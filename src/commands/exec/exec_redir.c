@@ -43,11 +43,14 @@ void	setup_redirections(t_redir *redirs)
 }
 
 /* read lines until delimiter */
-void	handle_heredoc(t_redir *redir, int pipefd[2])
+static int	handle_heredoc(t_redir *redir, int pipefd[2])
 {
 	char	*line;
 	size_t	len;
+	int		stdin_backup;
 
+	stdin_backup = dup(STDIN_FILENO);
+	sig_manager(2);
 	line = readline("> ");
 	while (line)
 	{
@@ -63,6 +66,12 @@ void	handle_heredoc(t_redir *redir, int pipefd[2])
 		line = readline("> ");
 	}
 	close(pipefd[1]);
+	dup2(stdin_backup, STDIN_FILENO);
+	close(stdin_backup);
+	sig_manager(0);
+	if (!line)
+		return (1);
+	return (0);
 }
 
 /* gather heredoc input before fork */
@@ -77,7 +86,13 @@ int	collect_heredocs(t_redir *redir, int *heredoc_fd)
 		{
 			if (pipe(pipefd) == -1)
 				return (-1);
-			handle_heredoc(redir, pipefd);
+			if (handle_heredoc(redir, pipefd))
+			{
+				close(pipefd[0]);
+				if (*heredoc_fd != -1)
+					close(*heredoc_fd);
+				return (1);
+			}
 			if (*heredoc_fd != -1)
 				close(*heredoc_fd);
 			*heredoc_fd = pipefd[0];

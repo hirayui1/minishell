@@ -1,24 +1,36 @@
 #include "../minishell.h"
 
-/* add redir node to cmd */
+static void	init_redir(t_redir *redir, t_redir_type type, char *file, char *d)
+{
+	redir->type = type;
+	redir->file = NULL;
+	redir->delimiter = NULL;
+	redir->next = NULL;
+	if (file)
+		redir->file = ft_strdup(file);
+	if (d)
+		redir->delimiter = ft_strdup(d);
+}
+
+/* add redir node to cmd (append to end for correct order) */
 void	add_redir(t_cmd *cmd, t_redir_type type, char *file, char *delim)
 {
 	t_redir	*new_redir;
+	t_redir	*temp;
 
 	new_redir = malloc(sizeof(t_redir));
 	if (!new_redir)
 		return ;
-	new_redir->type = type;
-	if (file)
-		new_redir->file = ft_strdup(file);
-	else
-		new_redir->file = NULL;
-	if (delim)
-		new_redir->delimiter = ft_strdup(delim);
-	else
-		new_redir->delimiter = NULL;
-	new_redir->next = cmd->redirs;
-	cmd->redirs = new_redir;
+	init_redir(new_redir, type, file, delim);
+	if (!cmd->redirs)
+	{
+		cmd->redirs = new_redir;
+		return ;
+	}
+	temp = cmd->redirs;
+	while (temp->next)
+		temp = temp->next;
+	temp->next = new_redir;
 }
 
 /* copy content inside quotes */

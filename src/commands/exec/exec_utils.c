@@ -3,7 +3,7 @@
 /* child: run execve */
 void	exe_child(char *dir, char **split, char **env, t_shell **shell)
 {
-	sig_manager(1);
+	sig_manager(3);
 	execve(dir, split, env);
 	perror(split[0]);
 	if (errno == ENOENT)
@@ -64,7 +64,7 @@ char	*find_path(char *filename, t_shell **shell)
 /* child: setup redirs and exec */
 void	exe_redir_child(t_cmd *cmd, t_shell **shell, char *dir, char **env)
 {
-	sig_manager(1);
+	sig_manager(3);
 	apply_heredoc_fd(cmd->heredoc_fd);
 	setup_redirections(cmd->redirs);
 	execve(dir, cmd->args, env);

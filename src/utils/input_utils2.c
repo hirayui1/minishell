@@ -1,6 +1,6 @@
 #include "../../minishell.h"
 
-static t_pipeline	*build_pipeline(char **segs, int count)
+static t_pipeline	*build_pipeline(char **segs, int count, t_shell **shell)
 {
 	t_pipeline	*pl;
 	int			i;
@@ -17,7 +17,12 @@ static t_pipeline	*build_pipeline(char **segs, int count)
 	{
 		parse_command(segs[i], &pl->cmds[i]);
 		pl->cmds[i].heredoc_fd = -1;
-		collect_heredocs(pl->cmds[i].redirs, &pl->cmds[i].heredoc_fd);
+		if (collect_heredocs(pl->cmds[i].redirs, &pl->cmds[i].heredoc_fd) == 1)
+		{
+			(*shell)->last_exit_status = 130;
+			pl->cmd_count = i + 1;
+			return (free_pipeline(pl), NULL);
+		}
 		if (i < count - 1)
 			pl->cmds[i].next = &pl->cmds[i + 1];
 		else
@@ -34,7 +39,7 @@ int	run_pipeline(char *input, int pipe_count, t_shell **shell)
 	segments = split_by_pipe(input, pipe_count);
 	if (!segments)
 		return (1);
-	pl = build_pipeline(segments, pipe_count + 1);
+	pl = build_pipeline(segments, pipe_count + 1, shell);
 	free_2d(segments);
 	if (!pl)
 		return (1);

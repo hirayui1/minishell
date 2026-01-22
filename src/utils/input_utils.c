@@ -50,8 +50,13 @@ int	run_single_cmd(char *input, t_shell **shell)
 	t_cmd	cmd;
 
 	parse_command(input, &cmd);
+	free(input);
 	cmd.heredoc_fd = -1;
-	collect_heredocs(cmd.redirs, &cmd.heredoc_fd);
+	if (collect_heredocs(cmd.redirs, &cmd.heredoc_fd) == 1)
+	{
+		(*shell)->last_exit_status = 130;
+		return (free_cmd(&cmd), 1);
+	}
 	if (!cmd.args || !cmd.args[0])
 	{
 		if (cmd.heredoc_fd != -1)
@@ -73,10 +78,8 @@ int	cmd_manager(char *input, t_shell **shell)
 	if (pipe_count == 0)
 	{
 		run_single_cmd(input, shell);
-		free(input);
 		return (0);
 	}
 	run_pipeline(input, pipe_count, shell);
-	free(input);
-	return (0);
+	return (free(input), 0);
 }

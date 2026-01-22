@@ -17,6 +17,8 @@ int	is_builtin(char **args)
 		return (1);
 	else if (!ft_strncmp(args[0], "echo", 5))
 		return (1);
+	else if (!ft_strncmp(args[0], "exit", 5))
+		return (1);
 	return (0);
 }
 
@@ -46,17 +48,34 @@ void	execute_builtin(t_cmd *cmd, t_shell **shell)
 {
 	setup_redirections(cmd->redirs);
 	if (!ft_strncmp(cmd->args[0], "cd", 3))
-		cd(cmd->args[1] ? cmd->args[1] : "", shell);
+	{
+		if (cmd->args[1])
+			cd(cmd->args[1], shell);
+		else
+			cd("", shell);
+	}
 	else if (!ft_strncmp(cmd->args[0], "pwd", 4))
 		pwd(shell);
 	else if (!ft_strncmp(cmd->args[0], "env", 4))
 		print_env(shell);
 	else if (!ft_strncmp(cmd->args[0], "unset", 6))
-		unset(cmd->args[1] ? cmd->args[1] : "", shell);
+	{
+		if (cmd->args[1])
+			unset(cmd->args[1], shell);
+		else
+			unset("", shell);
+	}
 	else if (!ft_strncmp(cmd->args[0], "export", 7))
-		exprt(cmd->args[1] ? cmd->args[1] : "", shell);
+	{
+		if (cmd->args[1])
+			exprt(cmd->args[1], shell);
+		else
+			exprt("", shell);
+	}
 	else if (!ft_strncmp(cmd->args[0], "echo", 5))
 		run_echo(cmd, shell);
+	else if (!ft_strncmp(cmd->args[0], "exit", 5))
+		builtin_exit(cmd, shell);
 }
 
 /* run builtin in child */

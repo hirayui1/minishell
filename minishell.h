@@ -117,6 +117,7 @@ void	print_env(t_shell **shell);
 void	unset(char *input, t_shell **shell);
 void	exprt(char *input, t_shell **shell);
 void	echo(char *input, t_shell **shell);
+void	builtin_exit(t_cmd *cmd, t_shell **shell);
 
 /* utils/parse.c */
 void	parse_command(char *input, t_cmd *cmd);
@@ -142,7 +143,6 @@ void	exe_redir_child(t_cmd *cmd, t_shell **shell, char *dir, char **env);
 
 /* utils/commands/exec_redir.c */
 void	setup_redirections(t_redir *redirs);
-void	handle_heredoc(t_redir *redir, int pipefd[2]);
 int		collect_heredocs(t_redir *redir, int *heredoc_fd);
 void	apply_heredoc_fd(int heredoc_fd);
 

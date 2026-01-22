@@ -40,6 +40,7 @@ void	exe_with_redir(t_cmd *cmd, t_shell **shell, char *dir, int flag)
 	char	**env;
 	pid_t	pid;
 
+	status = 0;
 	env = lst_to_array((*shell)->envp);
 	if (!env)
 		return ;
@@ -48,7 +49,9 @@ void	exe_with_redir(t_cmd *cmd, t_shell **shell, char *dir, int flag)
 		exe_redir_child(cmd, shell, dir, env);
 	else if (pid > 0)
 	{
+		sig_manager(1);
 		waitpid(pid, &status, 0);
+		sig_manager(0);
 		if (WIFEXITED(status))
 			(*shell)->last_exit_status = WEXITSTATUS(status);
 		else if (WIFSIGNALED(status))
