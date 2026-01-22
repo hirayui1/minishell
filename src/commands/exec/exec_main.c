@@ -16,18 +16,13 @@
 int	try_exec_external(t_cmd *cmd, t_shell **shell)
 {
 	char	*dir;
-	int		flag;
 
-	flag = 1;
 	if (cmd->args[0][0] == '/')
-		dir = cmd->args[0];
+		dir = ft_strdup(cmd->args[0]);
 	else if (!access(cmd->args[0], F_OK))
-		dir = cmd->args[0];
+		dir = ft_strdup(cmd->args[0]);
 	else
-	{
-		flag = 0;
 		dir = find_path(cmd->args[0], shell);
-	}
 	if (!dir)
 	{
 		(*shell)->last_exit_status = 127;
@@ -37,16 +32,15 @@ int	try_exec_external(t_cmd *cmd, t_shell **shell)
 	{
 		(*shell)->last_exit_status = EXIT_NOT_EXECUTABLE;
 		perror(dir);
-		if (!flag)
-			free(dir);
+		free(dir);
 		return (0);
 	}
-	exe_with_redir(cmd, shell, dir, flag);
+	exe_with_redir(cmd, shell, dir);
 	return (0);
 }
 
 /* fork and exec with redirs */
-void	exe_with_redir(t_cmd *cmd, t_shell **shell, char *dir, int flag)
+void	exe_with_redir(t_cmd *cmd, t_shell **shell, char *dir)
 {
 	int		status;
 	char	**env;
@@ -69,8 +63,7 @@ void	exe_with_redir(t_cmd *cmd, t_shell **shell, char *dir, int flag)
 		else if (WIFSIGNALED(status))
 			(*shell)->last_exit_status = EXIT_SIGNAL_BASE + WTERMSIG(status);
 		free_2d(env);
-		if (!flag)
-			free(dir);
+		free(dir);
 	}
 	else
 		perror("fork");

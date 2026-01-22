@@ -145,7 +145,7 @@ void	parse_redir_out(char **ptr, t_cmd *cmd);
 
 /* utils/commands/exec_main.c */
 int		try_exec_external(t_cmd *cmd, t_shell **shell);
-void	exe_with_redir(t_cmd *cmd, t_shell **shell, char *dir, int flag);
+void	exe_with_redir(t_cmd *cmd, t_shell **shell, char *dir);
 
 /* utils/commands/exec_utils.c */
 void	exe_child(char *dir, char **split, char **env, t_shell **shell);

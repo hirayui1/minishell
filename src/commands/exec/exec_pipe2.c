@@ -33,14 +33,14 @@ static void	pipe_exec_external(t_cmd *cmd, t_shell **shell)
 
 	dir = find_path(cmd->args[0], shell);
 	if (!dir)
-		dir = cmd->args[0];
+		dir = ft_strdup(cmd->args[0]);
 	env = lst_to_array((*shell)->envp);
 	execve(dir, cmd->args, env);
 	free_2d(env);
 	perror(cmd->args[0]);
-	free_cmd(cmd);
-	if (dir)
-		free(dir);
+	free(dir);
+	// free(cmd); this is not enough, the pipeline is stil alive
+	free_pipeline((*shell)->pl);
 	cleanup_shell(shell);
 	exit(EXIT_CMD_NOT_FOUND);
 }
@@ -53,8 +53,9 @@ static void	child_process(t_cmd *cmd, int in_fd, int out_fd, t_shell **shell)
 	setup_pipe_fds(in_fd, out_fd);
 	apply_heredoc_fd(cmd->heredoc_fd);
 	setup_redirections(cmd->redirs);
-	if (!cmd->args || !cmd->args[0]) // LOL1 : free cmd in childproc
+	if (!cmd->args || !cmd->args[0])
 	{
+		free_pipeline((*shell)->pl);
 		cleanup_shell(shell);
 		exit(0);
 	}
@@ -62,12 +63,11 @@ static void	child_process(t_cmd *cmd, int in_fd, int out_fd, t_shell **shell)
 	{
 		execute_builtin(cmd, shell);
 		status = (*shell)->last_exit_status;
+		free_pipeline((*shell)->pl);
 		cleanup_shell(shell);
 		exit(status);
-		// LOL2 : cannot do shell->last_exit_status if we free shell
 	}
 	pipe_exec_external(cmd, shell);
-	cleanup_shell(shell);
 }
 
 static void	run_pipe_cmd(t_cmd *cmd, int *in_fd, int pipefd[2], t_shell **shell)
