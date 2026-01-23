@@ -1,69 +1,10 @@
-/* ************************************************************************** */
-/*                                                                            */
-/*                                                        :::      ::::::::   */
-/*   exec_redir.c                                       :+:      :+:    :+:   */
-/*                                                    +:+ +:+         +:+     */
-/*   By: sandrzej <marvin@42.fr>                    +#+  +:+       +#+        */
-/*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2026/01/22 16:31:28 by sandrzej          #+#    #+#             */
-/*   Updated: 2026/01/22 16:31:29 by sandrzej         ###   ########.fr       */
-/*                                                                            */
-/* ************************************************************************** */
-
 #include "../../../minishell.h"
 
-/* open file for redir */
-static int	open_redir_fd(t_redir *redir)
+static char	*heredoc_runner(t_redir *redir, int pipefd[2])
 {
-	int	fd;
-
-	fd = -1;
-	if (redir->type == REDIR_IN)
-		fd = open(redir->file, O_RDONLY);
-	else if (redir->type == REDIR_OUT)
-		fd = open(redir->file, O_WRONLY | O_CREAT | O_TRUNC, 0644);
-	else if (redir->type == REDIR_APPEND)
-		fd = open(redir->file, O_WRONLY | O_CREAT | O_APPEND, 0644);
-	return (fd);
-}
-/* 
-free_pipeline((*shell)->pl);
-		    cleanup_shell(shell);
-				exit(EXIT_FAILURE); */
-/* apply all redirections */
-int	setup_redirections(t_redir *redirs)
-{
-	int	fd;
-	int	target;
-
-	while (redirs)
-	{
-		if (redirs->type != REDIR_HEREDOC)
-		{
-			fd = open_redir_fd(redirs);
-			if (fd == -1)
-				return (perror("minishell"), 1);
-			if (redirs->type == REDIR_IN)
-				target = STDIN_FILENO;
-			else
-				target = STDOUT_FILENO;
-			dup2(fd, target);
-			close(fd);
-		}
-		redirs = redirs->next;
-	}
-  return (0);
-}
-
-/* read lines until delimiter */
-static int	handle_heredoc(t_redir *redir, int pipefd[2])
-{
-	char	*line;
 	size_t	len;
-	int		stdin_backup;
+	char	*line;
 
-	stdin_backup = dup(STDIN_FILENO);
-	sig_manager(2);
 	line = readline("> ");
 	while (line)
 	{
@@ -78,6 +19,21 @@ static int	handle_heredoc(t_redir *redir, int pipefd[2])
 		free(line);
 		line = readline("> ");
 	}
+	if (!line)
+		return (0);
+	return (line);
+}
+
+/* read lines until delimiter */
+static int	handle_heredoc(t_redir *redir, int pipefd[2])
+{
+	char	*line;
+	int		stdin_backup;
+
+	stdin_backup = dup(STDIN_FILENO);
+	sig_manager(2);
+	// heredoc_runner was here
+	line = heredoc_runner(redir, pipefd);
 	close(pipefd[1]);
 	dup2(stdin_backup, STDIN_FILENO);
 	close(stdin_backup);
@@ -106,9 +62,6 @@ int	collect_heredocs(t_redir *redir, int *heredoc_fd)
 					close(*heredoc_fd);
 				return (1);
 			}
-			// RED
-			// if (*heredoc_fd != -1)
-			// 	close(*heredoc_fd);
 			*heredoc_fd = pipefd[0];
 		}
 		redir = redir->next;
