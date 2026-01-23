@@ -105,7 +105,6 @@ int	collect_heredocs(t_redir *redir, int *heredoc_fd)
 					close(*heredoc_fd);
 				return (1);
 			}
-			// RED
 			// if (*heredoc_fd != -1)
 			// 	close(*heredoc_fd);
 			*heredoc_fd = pipefd[0];
