@@ -108,7 +108,7 @@ int	cmd_manager(char *input, t_shell **shell)
 	input = normalizer(input, shell);
 	pipe_count = count_pipes(input);
 	if (pipe_count == 0)
-	{ (c)
+	{
 		run_single_cmd(input, shell);
 		return (0);
 	}
