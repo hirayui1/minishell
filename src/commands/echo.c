@@ -18,8 +18,8 @@ void	echo(char *input, t_shell **shell)
 
 	input = ft_strnstr(input, " ", ECHO_OFFSET);
 	if (!input || !*(++input))
-		printf("\n");
-	else if (!ft_strncmp("-n ", input, N_OPTION_OFFSET))
+		return (printf("\n"), (*shell)->last_exit_status = EXIT_SUCCESS, (void)0);
+	if (!ft_strncmp("-n ", input, N_OPTION_OFFSET))
 	{
 		trimmed = ft_strtrim(input + N_OPTION_OFFSET, " ");
 		printf("%s", trimmed);

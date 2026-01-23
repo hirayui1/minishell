@@ -168,7 +168,7 @@ char	*find_path(char *filename, t_shell **shell);
 void	exe_redir_child(t_cmd *cmd, t_shell **shell, char *dir, char **env);
 
 /* src/commands/exec/exec_redir.c */
-void	setup_redirections(t_redir *redirs);
+int	setup_redirections(t_redir *redirs);
 int		collect_heredocs(t_redir *redir, int *heredoc_fd);
 void	apply_heredoc_fd(int heredoc_fd);
 

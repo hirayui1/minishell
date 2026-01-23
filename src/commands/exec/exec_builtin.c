@@ -58,7 +58,8 @@ static void	run_echo(t_cmd *cmd, t_shell **shell)
 /* run builtin with redirs */
 void	execute_builtin(t_cmd *cmd, t_shell **shell)
 {
-	setup_redirections(cmd->redirs);
+	if (setup_redirections(cmd->redirs))
+    return ((*shell)->last_exit_status=EXIT_FAILURE, (void)0);
 	if (!ft_strncmp(cmd->args[0], "cd", 3))
 	{
 		if (cmd->args[1])

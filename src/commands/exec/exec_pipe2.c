@@ -52,7 +52,11 @@ static void	child_process(t_cmd *cmd, int in_fd, int out_fd, t_shell **shell)
 	sig_manager(3);
 	setup_pipe_fds(in_fd, out_fd);
 	apply_heredoc_fd(cmd->heredoc_fd);
-	setup_redirections(cmd->redirs);
+	if (setup_redirections(cmd->redirs)) {
+    free_pipeline((*shell)->pl);
+		cleanup_shell(shell);
+		exit(EXIT_FAILURE);
+  }
 	if (!cmd->args || !cmd->args[0])
 	{
 		free_pipeline((*shell)->pl);

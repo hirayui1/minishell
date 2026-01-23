@@ -26,9 +26,12 @@ static int	open_redir_fd(t_redir *redir)
 		fd = open(redir->file, O_WRONLY | O_CREAT | O_APPEND, 0644);
 	return (fd);
 }
-
+/* 
+free_pipeline((*shell)->pl);
+		    cleanup_shell(shell);
+				exit(EXIT_FAILURE); */
 /* apply all redirections */
-void	setup_redirections(t_redir *redirs)
+int	setup_redirections(t_redir *redirs)
 {
 	int	fd;
 	int	target;
@@ -39,10 +42,7 @@ void	setup_redirections(t_redir *redirs)
 		{
 			fd = open_redir_fd(redirs);
 			if (fd == -1)
-			{
-				perror("minishell");
-				exit(EXIT_FAILURE);
-			}
+				return (perror("minishell"), 1);
 			if (redirs->type == REDIR_IN)
 				target = STDIN_FILENO;
 			else
@@ -52,6 +52,7 @@ void	setup_redirections(t_redir *redirs)
 		}
 		redirs = redirs->next;
 	}
+  return (0);
 }
 
 /* read lines until delimiter */
@@ -105,6 +106,7 @@ int	collect_heredocs(t_redir *redir, int *heredoc_fd)
 					close(*heredoc_fd);
 				return (1);
 			}
+			// RED
 			// if (*heredoc_fd != -1)
 			// 	close(*heredoc_fd);
 			*heredoc_fd = pipefd[0];

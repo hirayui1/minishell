@@ -12,24 +12,6 @@
 
 #include "../../../minishell.h"
 
-/* child: run execve */
-/*
-void	exe_child(char *dir, char **split, char **env, t_shell **shell)
-{
-	sig_manager(3);
-	execve(dir, split, env);
-  free(dir);
-  free_2d(env);
-	perror(split[0]);
-  free_2d(split);
-	if (errno == ENOENT)
-		ft_exit(shell, NULL, EXIT_CMD_NOT_FOUND);
-	else if (errno == EACCES)
-		ft_exit(shell, NULL, EXIT_NOT_EXECUTABLE);
-	else
-		ft_exit(shell, NULL, 1);
-	exit(1);
-} */
 /* parent: get exit status */
 void	exe_parent(int status, char **env, t_shell **shell)
 {
@@ -81,11 +63,13 @@ void	exe_redir_child(t_cmd *cmd, t_shell **shell, char *dir, char **env)
 {
 	sig_manager(3);
 	apply_heredoc_fd(cmd->heredoc_fd);
-	setup_redirections(cmd->redirs);
-	execve(dir, cmd->args, env);
+	if (!setup_redirections(cmd->redirs))
+  {
+    execve(dir, cmd->args, env);
+    perror(cmd->args[0]);
+  }
 	free(dir);
 	free_2d(env);
-	perror(cmd->args[0]);
 	free_cmd(cmd);
 	if (errno == ENOENT)
 		ft_exit(shell, NULL, EXIT_CMD_NOT_FOUND);
