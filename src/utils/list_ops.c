@@ -12,7 +12,7 @@
 
 #include "../../minishell.h"
 
-t_env * lst_append(char *val, t_env *envp)
+t_env	*lst_append(char *val, t_env *envp)
 {
 	while (envp->next)
 		envp = envp->next;

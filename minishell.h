@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: sandrzej <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: bkarabab <bkarabab@student.42warsaw.pl>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/22 16:28:57 by sandrzej          #+#    #+#             */
-/*   Updated: 2026/01/22 16:28:58 by sandrzej         ###   ########.fr       */
+/*   Updated: 2026/01/24 10:04:04 by bkarabab         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -79,7 +79,7 @@ typedef struct s_shell
 	struct s_shell	*next;
 	struct s_env	*envp;
 	int				last_exit_status;
-  t_pipeline *pl;
+	t_pipeline		*pl;
 	char			*pwd;
 }	t_shell;
 
@@ -113,12 +113,16 @@ char	*remove_extra_chars(char *s, char c);
 
 /* src/utils/expand.c */
 char	*expnd(char *input, t_shell **shell);
-char	*find_envar(char *input, t_shell **shell);
 
 /* src/utils/expand_utils.c */
 int		handle_exit_status(int *len, t_shell **shell);
 void	calc_var_len(char **input, int *len, t_shell **shell);
 void	insert_var(char **out, char **input, t_shell **shell);
+
+/* src/utils/expand_utils2.c*/
+void	copy_single_quote(char **out, char **input);
+void	skip_single_quote(char **input, int *len);
+char	*find_envar(char *input, t_shell **shell);
 
 /* src/utils/sig_handlers.c */
 void	sig_manager(int level);
@@ -168,20 +172,29 @@ char	*find_path(char *filename, t_shell **shell);
 void	exe_redir_child(t_cmd *cmd, t_shell **shell, char *dir, char **env);
 
 /* src/commands/exec/exec_redir.c */
-int	setup_redirections(t_redir *redirs);
+int		setup_redirections(t_redir *redirs);
 int		collect_heredocs(t_redir *redir, int *heredoc_fd);
 void	apply_heredoc_fd(int heredoc_fd);
 
 /* src/commands/exec/exec_builtin.c */
 int		is_builtin(char **args);
-void	execute_builtin(t_cmd *cmd, t_shell **shell);
 void	execute_command(t_cmd *cmd, t_shell **shell);
+
+/* src/commands/exec/exec_builtin2.c */
+void	execute_builtin(t_cmd *cmd, t_shell **shell);
 
 /* src/commands/exec/exec_pipe.c */
 void	execute_pipeline(t_pipeline *pl, t_shell **shell);
 int		count_pipes(char *input);
 char	**split_by_pipe(char *input, int count);
 void	free_pipeline(t_pipeline *pl);
+
+/* src/commands/exec/exec_pipe2.c*/
+void	run_pipe_cmd(t_cmd *cmd, int *in_fd, int pipefd[2], t_shell **shell);
+void	child_process(t_cmd *cmd, int in_fd, int out_fd, t_shell **shell);
+void	child_process_helper(t_cmd *cmd, t_shell **shell);
+void	pipe_exec_external(t_cmd *cmd, t_shell **shell);
+void	setup_pipe_fds(int in_fd, int out_fd);
 
 /* src/commands/exec/exec_pipe3.c */
 void	wait_for_children(int count, t_shell **shell);

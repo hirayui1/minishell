@@ -12,10 +12,9 @@
 
 #include "../../minishell.h"
 
-static t_pipeline	*build_pipeline(char **segs, int count, t_shell **shell)
+static t_pipeline	*init_pipeline(int count)
 {
 	t_pipeline	*pl;
-	int			i;
 
 	pl = malloc(sizeof(t_pipeline));
 	if (!pl)
@@ -24,6 +23,15 @@ static t_pipeline	*build_pipeline(char **segs, int count, t_shell **shell)
 	if (!pl->cmds)
 		return (free(pl), NULL);
 	pl->cmd_count = count;
+	return (pl);
+}
+
+static t_pipeline	*build_pipeline(char **segs, int count, t_shell **shell)
+{
+	t_pipeline	*pl;
+	int			i;
+
+	pl = init_pipeline(count);
 	i = -1;
 	while (++i < count)
 	{

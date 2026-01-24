@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   exec_utils.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: sandrzej <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: bkarabab <bkarabab@student.42warsaw.pl>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2026/01/22 16:31:32 by sandrzej          #+#    #+#             */
-/*   Updated: 2026/01/22 16:31:34 by sandrzej         ###   ########.fr       */
+/*   Created: 2026/01/24 09:54:19 by bkarabab          #+#    #+#             */
+/*   Updated: 2026/01/24 09:54:20 by bkarabab         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,10 +64,10 @@ void	exe_redir_child(t_cmd *cmd, t_shell **shell, char *dir, char **env)
 	sig_manager(3);
 	apply_heredoc_fd(cmd->heredoc_fd);
 	if (!setup_redirections(cmd->redirs))
-  {
-    execve(dir, cmd->args, env);
-    perror(cmd->args[0]);
-  }
+	{
+		execve(dir, cmd->args, env);
+		perror(cmd->args[0]);
+	}
 	free(dir);
 	free_2d(env);
 	free_cmd(cmd);

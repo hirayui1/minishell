@@ -14,6 +14,7 @@ UTILS	:= $(UDIR)/input_utils.c \
 		 $(UDIR)/list_ops.c \
 		 $(UDIR)/expand.c \
 		 $(UDIR)/expand_utils.c \
+		 $(UDIR)/expand_utils2.c \
 	   $(UDIR)/sig_handlers.c \
 	   $(UDIR)/string_utils.c \
 	   $(UDIR)/string_utils2.c
@@ -26,7 +27,9 @@ COMMANDS:= $(CDIR)/cd.c \
 EXEC	:= $(EDIR)/exec_main.c \
 	   $(EDIR)/exec_utils.c \
 	   $(EDIR)/exec_redir.c \
+	   $(EDIR)/exec_redir2.c \
 	   $(EDIR)/exec_builtin.c \
+	   $(EDIR)/exec_builtin2.c \
 	   $(EDIR)/exec_pipe.c \
 	   $(EDIR)/exec_pipe2.c \
 	   $(EDIR)/exec_pipe3.c

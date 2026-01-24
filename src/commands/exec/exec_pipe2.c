@@ -3,16 +3,16 @@
 /*                                                        :::      ::::::::   */
 /*   exec_pipe2.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: sandrzej <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: bkarabab <bkarabab@student.42warsaw.pl>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/22 16:31:12 by sandrzej          #+#    #+#             */
-/*   Updated: 2026/01/22 16:31:13 by sandrzej         ###   ########.fr       */
+/*   Updated: 2026/01/24 09:58:08 by bkarabab         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../../minishell.h"
 
-static void	setup_pipe_fds(int in_fd, int out_fd)
+void	setup_pipe_fds(int in_fd, int out_fd)
 {
 	if (in_fd != STDIN_FILENO)
 	{
@@ -26,7 +26,7 @@ static void	setup_pipe_fds(int in_fd, int out_fd)
 	}
 }
 
-static void	pipe_exec_external(t_cmd *cmd, t_shell **shell)
+void	pipe_exec_external(t_cmd *cmd, t_shell **shell)
 {
 	char	*dir;
 	char	**env;
@@ -39,24 +39,21 @@ static void	pipe_exec_external(t_cmd *cmd, t_shell **shell)
 	free_2d(env);
 	perror(cmd->args[0]);
 	free(dir);
-	// free(cmd); this is not enough, the pipeline is stil alive
 	free_pipeline((*shell)->pl);
 	cleanup_shell(shell);
 	exit(EXIT_CMD_NOT_FOUND);
 }
 
-static void	child_process(t_cmd *cmd, int in_fd, int out_fd, t_shell **shell)
+void	child_process_helper(t_cmd *cmd, t_shell **shell)
 {
 	int	status;
 
-	sig_manager(3);
-	setup_pipe_fds(in_fd, out_fd);
-	apply_heredoc_fd(cmd->heredoc_fd);
-	if (setup_redirections(cmd->redirs)) {
-    free_pipeline((*shell)->pl);
+	if (setup_redirections(cmd->redirs))
+	{
+		free_pipeline((*shell)->pl);
 		cleanup_shell(shell);
 		exit(EXIT_FAILURE);
-  }
+	}
 	if (!cmd->args || !cmd->args[0])
 	{
 		free_pipeline((*shell)->pl);
@@ -71,10 +68,18 @@ static void	child_process(t_cmd *cmd, int in_fd, int out_fd, t_shell **shell)
 		cleanup_shell(shell);
 		exit(status);
 	}
+}
+
+void	child_process(t_cmd *cmd, int in_fd, int out_fd, t_shell **shell)
+{
+	sig_manager(3);
+	setup_pipe_fds(in_fd, out_fd);
+	apply_heredoc_fd(cmd->heredoc_fd);
+	child_process_helper(cmd, shell);
 	pipe_exec_external(cmd, shell);
 }
 
-static void	run_pipe_cmd(t_cmd *cmd, int *in_fd, int pipefd[2], t_shell **shell)
+void	run_pipe_cmd(t_cmd *cmd, int *in_fd, int pipefd[2], t_shell **shell)
 {
 	pid_t	pid;
 	int		out_fd;
@@ -97,29 +102,4 @@ static void	run_pipe_cmd(t_cmd *cmd, int *in_fd, int pipefd[2], t_shell **shell)
 		close(pipefd[1]);
 		*in_fd = pipefd[0];
 	}
-}
-
-void	execute_pipeline(t_pipeline *pl, t_shell **shell)
-{
-	int		pipefd[2];
-	int		in_fd;
-	int		i;
-	t_cmd	*cmd;
-
-	in_fd = STDIN_FILENO;
-	i = 0;
-	cmd = pl->cmds;
-	(*shell)->pl = pl;
-	while (i < pl->cmd_count)
-	{
-		if (i < pl->cmd_count - 1)
-			pipe(pipefd);
-		run_pipe_cmd(cmd, &in_fd, pipefd, shell);
-		cmd = cmd->next;
-		i++;
-	}
-	(*shell)->pl = NULL;
-	sig_manager(1);
-	wait_for_children(pl->cmd_count, shell);
-	sig_manager(0);
 }

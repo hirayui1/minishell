@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   exec_builtin.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: sandrzej <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: bkarabab <bkarabab@student.42warsaw.pl>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2026/01/22 16:31:02 by sandrzej          #+#    #+#             */
-/*   Updated: 2026/01/22 16:31:03 by sandrzej         ###   ########.fr       */
+/*   Created: 2026/01/24 09:52:23 by bkarabab          #+#    #+#             */
+/*   Updated: 2026/01/24 09:52:23 by bkarabab         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,63 +32,6 @@ int	is_builtin(char **args)
 	else if (!ft_strncmp(args[0], "exit", 5))
 		return (1);
 	return (0);
-}
-
-/* rebuild echo input string */
-static void	run_echo(t_cmd *cmd, t_shell **shell)
-{
-	char	*echo_input;
-	char	*tmp;
-	int		i;
-
-	echo_input = ft_strdup("echo");
-	i = 1;
-	while (cmd->args[i])
-	{
-		tmp = ft_strjoin(echo_input, " ");
-		free(echo_input);
-		echo_input = ft_strjoin(tmp, cmd->args[i]);
-		free(tmp);
-		++i;
-	}
-	echo(echo_input, shell);
-	free(echo_input);
-}
-
-/* run builtin with redirs */
-void	execute_builtin(t_cmd *cmd, t_shell **shell)
-{
-	if (setup_redirections(cmd->redirs))
-    	return ((*shell)->last_exit_status=EXIT_FAILURE, (void)0);
-	if (!ft_strncmp(cmd->args[0], "cd", 3))
-	{
-		if (cmd->args[1])
-			cd(cmd->args[1], shell);
-		else
-			cd("", shell);
-	}
-	else if (!ft_strncmp(cmd->args[0], "pwd", 4))
-		pwd(shell);
-	else if (!ft_strncmp(cmd->args[0], "env", 4))
-		print_env(shell);
-	else if (!ft_strncmp(cmd->args[0], "unset", 6))
-	{
-		if (cmd->args[1])
-			unset(cmd->args[1], shell);
-		else
-			unset("", shell);
-	}
-	else if (!ft_strncmp(cmd->args[0], "export", 7))
-	{
-		if (cmd->args[1])
-			exprt(cmd->args[1], shell);
-		else
-			exprt("", shell);
-	}
-	else if (!ft_strncmp(cmd->args[0], "echo", 5))
-		run_echo(cmd, shell);
-	else if (!ft_strncmp(cmd->args[0], "exit", 5))
-		builtin_exit(cmd, shell);
 }
 
 /* run builtin in child */

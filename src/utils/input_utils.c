@@ -95,9 +95,6 @@ int	run_single_cmd(char *input, t_shell **shell)
 		return (free_cmd(&cmd), 0);
 	}
 	execute_command(&cmd, shell);
-	// RED
-	// if (cmd.heredoc_fd != -1)
-	// 	close(cmd.heredoc_fd);
 	return (free_cmd(&cmd), 0);
 }
 

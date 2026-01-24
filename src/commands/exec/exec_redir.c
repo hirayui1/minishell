@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   exec_redir.c                                       :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: bkarabab <bkarabab@student.42warsaw.pl>    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2026/01/24 09:54:24 by bkarabab          #+#    #+#             */
+/*   Updated: 2026/01/24 09:54:25 by bkarabab         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "../../../minishell.h"
 
 static char	*heredoc_runner(t_redir *redir, int pipefd[2])
@@ -32,7 +44,6 @@ static int	handle_heredoc(t_redir *redir, int pipefd[2])
 
 	stdin_backup = dup(STDIN_FILENO);
 	sig_manager(2);
-	// heredoc_runner was here
 	line = heredoc_runner(redir, pipefd);
 	close(pipefd[1]);
 	dup2(stdin_backup, STDIN_FILENO);

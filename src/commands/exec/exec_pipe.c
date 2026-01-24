@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   exec_pipe.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: sandrzej <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: bkarabab <bkarabab@student.42warsaw.pl>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/22 16:31:23 by sandrzej          #+#    #+#             */
-/*   Updated: 2026/01/22 16:31:24 by sandrzej         ###   ########.fr       */
+/*   Updated: 2026/01/24 09:56:26 by bkarabab         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -98,4 +98,29 @@ void	free_pipeline(t_pipeline *pl)
 	}
 	free(pl->cmds);
 	free(pl);
+}
+
+void	execute_pipeline(t_pipeline *pl, t_shell **shell)
+{
+	int		pipefd[2];
+	int		in_fd;
+	int		i;
+	t_cmd	*cmd;
+
+	in_fd = STDIN_FILENO;
+	i = 0;
+	cmd = pl->cmds;
+	(*shell)->pl = pl;
+	while (i < pl->cmd_count)
+	{
+		if (i < pl->cmd_count - 1)
+			pipe(pipefd);
+		run_pipe_cmd(cmd, &in_fd, pipefd, shell);
+		cmd = cmd->next;
+		i++;
+	}
+	(*shell)->pl = NULL;
+	sig_manager(1);
+	wait_for_children(pl->cmd_count, shell);
+	sig_manager(0);
 }

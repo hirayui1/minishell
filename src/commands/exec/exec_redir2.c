@@ -1,7 +1,19 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   exec_redir2.c                                      :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: bkarabab <bkarabab@student.42warsaw.pl>    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2026/01/24 09:53:17 by bkarabab          #+#    #+#             */
+/*   Updated: 2026/01/24 09:53:19 by bkarabab         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "../../../minishell.h"
 
 /* open file for redir */
-static int	open_redir_fd(t_redir *redir)
+int	open_redir_fd(t_redir *redir)
 {
 	int	fd;
 

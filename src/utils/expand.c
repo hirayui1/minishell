@@ -12,40 +12,6 @@
 
 #include "../../minishell.h"
 
-/* get env var value */
-char	*find_envar(char *input, t_shell **shell)
-{
-	t_env	*envp;
-	int		len;
-
-	++input;
-	if (!input)
-		return (NULL);
-	len = find_word_len(input);
-	input = substr(input, len);
-	if (!input)
-		return (NULL);
-	envp = find_key(input, (*shell)->envp);
-	free(input);
-	if (envp)
-		return (ft_strchr(envp->val, '=') + 1);
-	return (NULL);
-}
-
-/* skip 'quoted' section */
-static void	skip_single_quote(char **input, int *len)
-{
-	*len += 2;
-	++(*input);
-	while (**input && **input != '\'')
-	{
-		++(*len);
-		++(*input);
-	}
-	if (**input == '\'')
-		++(*input);
-}
-
 /* calc len inside "quotes" */
 static void	calc_in_dquote(char **input, int *len, t_shell **shell)
 {
@@ -83,16 +49,6 @@ int	calc_total_len(char *input, int *len, t_shell **shell)
 		}
 	}
 	return (0);
-}
-
-/* copy 'quoted' content */
-static void	copy_single_quote(char **out, char **input)
-{
-	*(*out)++ = *(*input)++;
-	while (**input && **input != '\'')
-		*(*out)++ = *(*input)++;
-	if (**input == '\'')
-		*(*out)++ = *(*input)++;
 }
 
 /* copy "quoted" with expansion */
